@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escala de Obreiros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Escala inteligente</span>
+        <h1>Escala de Obreiros</h1>
+        <p>
+          Um calendário renovado, mais agradável e com cadastro de novos integrantes,
+          preservando a lógica de rotação já usada pela igreja.
+        </p>
+        <div class="hero-actions">
+          <button id="prev" class="nav-btn" type="button" aria-label="Mês anterior">◀</button>
+          <div class="month-pill" id="monthYear"></div>
+          <button id="next" class="nav-btn" type="button" aria-label="Próximo mês">▶</button>
+          <button id="adminAccessBtn" class="ghost-btn" type="button">Área do administrador</button>
+        </div>
+      </div>
+
+    </header>
+
+    <main class="layout">
+      <section class="calendar-section card">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Calendário</span>
+            <h2>Visão mensal da escala</h2>
+            <p class="month-notice" id="monthNotice">Aviso geral do mês</p>
+          </div>
+          <div class="legend">
+            <span><i class="dot escala"></i> Escala</span>
+            <span><i class="dot ensaio"></i> Ensaio</span>
+            <span><i class="dot faesp"></i> FAESP</span>
+            <span><i class="dot sabado"></i> Sábado especial</span>
+          </div>
+        </div>
+
+        <div class="weekdays">
+          <div>Dom</div>
+          <div>Seg</div>
+          <div>Ter</div>
+          <div>Qua</div>
+          <div>Qui</div>
+          <div>Sex</div>
+          <div>Sáb</div>
+        </div>
+        <div id="calendar" class="calendar"></div>
+      </section>
+
+      <section class="global-info">
+        <div class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Hoje</span>
+              <h2>Programação do dia</h2>
+            </div>
+          </div>
+          <div class="panel-card spotlight">
+            <span class="panel-label">Hoje</span>
+            <strong id="todayTitle">Carregando...</strong>
+            <p id="todaySubtitle">Verificando a programação do dia.</p>
+          </div>
+          <div class="panel-grid">
+            <div class="panel-card mini">
+              <span class="panel-label">Próximo sábado</span>
+              <strong id="nextSaturdayTitle">Carregando...</strong>
+              <p id="nextSaturdaySubtitle"></p>
+            </div>
+            <div class="panel-card mini">
+              <span class="panel-label">Integrantes na escala</span>
+              <strong id="memberCount">0</strong>
+              <p>Base fixa + novos cadastros</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Resumo</span>
+              <h2>Próximos destaques</h2>
+            </div>
+          </div>
+          <div id="upcomingList" class="upcoming-list"></div>
+        </div>
+
+      </section>
+
+      <aside id="adminPanel" class="sidebar admin-panel hidden">
+        <section class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Cadastro</span>
+              <h2>Integrantes da escala</h2>
+            </div>
+          </div>
+
+          <form id="memberForm" class="member-form">
+            <label>
+              Nome
+              <input name="nome" type="text" placeholder="Nome do integrante" required />
+            </label>
+            <label>
+              Cargo
+              <input name="cargo" type="text" placeholder="Ex.: Diácono, Cooperador" required />
+            </label>
+            <label>
+              Endereço
+              <input name="endereco" type="text" placeholder="Rua / avenida" />
+            </label>
+            <label>
+              Contato
+              <input name="contato" type="text" placeholder="Telefone ou WhatsApp" />
+            </label>
+            <label>
+              Atividade
+              <input name="atividade" type="text" value="ABRIR E FECHAR A IGREJA" />
+            </label>
+            <label>
+              Forma de entrada na escala
+              <select id="memberModeSelect" name="modoEscala">
+                <option value="sequencia">Entrar na sequência automática</option>
+                <option value="fixo">Ficar em um dia fixo</option>
+              </select>
+            </label>
+            <label id="fixedDayField" class="hidden">
+              Dia fixo
+              <select name="diaFixo">
+                <option value="0">Domingo</option>
+                <option value="1">Segunda-feira</option>
+                <option value="3">Quarta-feira</option>
+                <option value="5">Sexta-feira</option>
+              </select>
+            </label>
+            <label>
+              Foto
+              <input id="fotoInput" name="foto" type="file" accept="image/*" />
+            </label>
+            <div class="preview-wrap">
+              <img id="uploadPreview" class="upload-preview hidden" alt="Pré-visualização da foto" />
+            </div>
+            <button id="saveMemberBtn" class="primary-btn" type="submit">Salvar integrante</button>
+          </form>
+
+          <div class="firebase-box">
+            <div class="firebase-status">
+              <strong>Firebase:</strong>
+              <span id="firebaseStatus">não configurado</span>
+            </div>
+            <button id="toggleFirebaseConfig" class="ghost-btn small" type="button">Configurar Firebase</button>
+          </div>
+
+          <form id="firebaseForm" class="firebase-form hidden">
+            <p>Preencha os dados do seu projeto Firebase para salvar integrantes online. As fotos agora são gravadas em base64 no próprio documento.</p>
+            <label><span>API Key</span><input name="apiKey" type="text" /></label>
+            <label><span>Auth Domain</span><input name="authDomain" type="text" /></label>
+            <label><span>Project ID</span><input name="projectId" type="text" /></label>
+            <label><span>Storage Bucket (opcional)</span><input name="storageBucket" type="text" /></label>
+            <label><span>Messaging Sender ID</span><input name="messagingSenderId" type="text" /></label>
+            <label><span>App ID</span><input name="appId" type="text" /></label>
+            <div class="firebase-actions">
+              <button id="saveFirebaseConfig" class="primary-btn" type="submit">Salvar configuração</button>
+              <button id="clearFirebaseConfig" class="ghost-btn small" type="button">Limpar</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Sábados</span>
+              <h2>Cadastro dos sábados especiais</h2>
+            </div>
+          </div>
+
+          <form id="saturdayForm" class="member-form">
+            <label>
+              Qual sábado
+              <select id="saturdayOrderSelect" name="ordemSabado">
+                <option value="1">Primeiro sábado</option>
+                <option value="2">Segundo sábado</option>
+                <option value="3">Terceiro sábado</option>
+                <option value="4">Quarto sábado</option>
+                <option value="5">Quinto sábado</option>
+              </select>
+            </label>
+            <label>
+              Título do sábado
+              <input name="nome" type="text" placeholder="Ex.: Culto dos Jovens" required />
+            </label>
+            <label>
+              Nome do obreiro responsÃ¡vel
+              <input name="responsavel" type="text" placeholder="Ex.: D. JoÃ£o ou Todos os obreiros" required />
+            </label>
+            <label>
+              Descrição / atividade
+              <input name="atividade" type="text" placeholder="Ex.: Primeiro sábado do mês" required />
+            </label>
+            <label>
+              Foto do sábado
+              <input id="saturdayPhotoInput" name="fotoSabado" type="file" accept="image/*" />
+            </label>
+            <div class="preview-wrap">
+              <img id="saturdayPreview" class="upload-preview hidden" alt="Pré-visualização da foto do sábado" />
+            </div>
+            <div class="member-form saturday-people-grid">
+              <label>
+                Pessoa 1
+                <select id="saturdayMember1" name="membro1" required></select>
+              </label>
+              <label>
+                Pessoa 2
+                <select id="saturdayMember2" name="membro2" required></select>
+              </label>
+              <label>
+                Pessoa 3
+                <select id="saturdayMember3" name="membro3" required></select>
+              </label>
+            </div>
+            <button class="primary-btn" type="submit">Salvar sábado</button>
+          </form>
+          <div id="saturdayList" class="member-list"></div>
+        </section>
+
+        <section class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Visual</span>
+              <h2>Paleta do fundo</h2>
+            </div>
+          </div>
+
+          <form id="themeForm" class="member-form">
+            <label>
+              Paleta de cores do background
+              <select id="themePaletteSelect" name="themePalette">
+                <option value="areia">Areia suave</option>
+                <option value="ceu">Céu claro</option>
+                <option value="oliva">Oliva elegante</option>
+                <option value="vinho">Vinho sutil</option>
+                <option value="aurora">Preto, azul e amarelo</option>
+                <option value="fusion">Preto, azul, verde e vermelho</option>
+              </select>
+            </label>
+            <button class="primary-btn" type="submit">Aplicar paleta</button>
+          </form>
+        </section>
+
+        <section class="card info-card">
+          <div class="section-head compact">
+            <div>
+              <span class="section-kicker">Integrantes</span>
+              <h2>Lista cadastrada</h2>
+            </div>
+          </div>
+          <div id="memberList" class="member-list"></div>
+        </section>
+
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <strong>Desenvolvedor original:</strong> Paulo Cesar Camargo
+      </div>
+      <div>Terças: anúncio de ensaio. Quintas: anúncio de FAESP.</div>
+    </footer>
+  </div>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button id="closeModal" class="close-modal" type="button" aria-label="Fechar">×</button>
+      <div id="modalFotos" class="modal-fotos"></div>
+      <div class="modal-body">
+        <h2 id="modalNome"></h2>
+        <p id="rowCargo"><b>Cargo:</b> <span id="modalCargo"></span></p>
+        <p id="rowEndereco"><b>Endereço:</b> <span id="modalEndereco"></span></p>
+        <p id="rowContato"><b>Contato:</b> <span id="modalContato"></span></p>
+        <p><b>Atividade:</b> <span id="modalAtividade"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="adminModal" class="modal" aria-hidden="true">
+    <div class="modal-content admin-modal-content">
+      <button id="closeAdminModal" class="close-modal" type="button" aria-label="Fechar">×</button>
+      <div class="modal-body">
+        <h2>Acesso administrativo</h2>
+        <p>Somente o administrador visualiza o cadastro de integrantes e a configuração do Firebase.</p>
+        <form id="adminLoginForm" class="member-form">
+          <label>
+            Senha do administrador
+            <input id="adminPasswordInput" name="adminPassword" type="password" placeholder="Digite a senha" required />
+          </label>
+          <button class="primary-btn" type="submit">Entrar</button>
+          <button id="adminLogoutBtn" class="ghost-btn hidden" type="button">Sair do modo admin</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
