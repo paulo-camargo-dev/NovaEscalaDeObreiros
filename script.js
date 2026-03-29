@@ -411,13 +411,19 @@ function renderCalendar() {
             <img src="${pessoa.foto}" alt="${pessoa.nome}">
             <span class="${isToday ? "blink" : ""}">${pessoa.nome}</span>
           </div>
-          ${responsavelHtml}
-          ${membrosHtmlRender}
+         
         </div>
         <div class="day-number">
           <span class="number">${day}</span>
         </div>
       `;
+
+      if (tipo === "sabado") {
+        const saturdayGroupEl = card.querySelector(".group-members-sabado");
+        if (saturdayGroupEl) {
+          saturdayGroupEl.innerHTML = "<span></span>";
+        }
+      }
 
       card.dataset.pessoa = JSON.stringify(pessoa);
       card.dataset.issabado = tipo === "sabado" ? "1" : "0";
