@@ -1027,7 +1027,7 @@ function checarAlerta17h() {
 
   localStorage.setItem(storageKey, "1");
   const { pessoa } = pessoaParaData(now);
-  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
+  showToast(`19:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
 }
 
 function atualizarPreviewArquivo(inputEl, previewEl) {
