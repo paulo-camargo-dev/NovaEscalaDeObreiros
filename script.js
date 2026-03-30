@@ -57,50 +57,50 @@ const THEME_PALETTES = {
 
 const baseGrupo = [
   { nome: "Coop Paulo", cargo: "Cooperador", endereco: "Av: Fortunato Camargo 1075", contato: "(11) 91356-3576", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Cpaulo.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Reginaldo", cargo: "DiÃ¡cono", endereco: "Rua F", contato: "(11) 96305-0243", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/reginaldo2.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Carlinhos", cargo: "DiÃ¡cono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D JoÃ£o", cargo: "DiÃ¡cono", endereco: "Rua D", contato: "(11) 98553-8590", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Djoao.jpg", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Reginaldo", cargo: "Diacono", endereco: "Rua F", contato: "(11) 96305-0243", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/reginaldo2.PNG", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Carlinhos", cargo: "Diacono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D João", cargo: "Diacono", endereco: "Rua D", contato: "(11) 98553-8590", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Djoao.jpg", modoEscala: "sequencia", diaFixo: "" },
   { nome: "Coop Eliazer", cargo: "Cooperador", endereco: "Rua E", contato: "(11) 98255-3053", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/eliazer.jpg", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Paulo", cargo: "DiÃ¡cono", endereco: "Rua B", contato: "(11) 94685-8301", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Dpaulo.jpg", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Paulo", cargo: "Diacono", endereco: "Rua B", contato: "(11) 94685-8301", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Dpaulo.jpg", modoEscala: "sequencia", diaFixo: "" },
   { nome: "Coop Manuel", cargo: "Cooperador", endereco: "Rua G", contato: "(11) 98980-6608", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/manuel.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D zezinho", cargo: "DiÃ¡cono", endereco: "Rua Curitiba", contato: "(11) 95083-4846", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/zezinho.PNG", modoEscala: "sequencia", diaFixo: "" }
+  { nome: "D zezinho", cargo: "Diacono", endereco: "Rua Curitiba", contato: "(11) 95083-4846", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/zezinho.PNG", modoEscala: "sequencia", diaFixo: "" }
 ];
 
-const ensaio = { nome: "ENSAIO", atividade: "AnÃºncio de ensaio", foto: "img/ensaio.jpg" };
-const faesp = { nome: "FAESP", atividade: "AnÃºncio de FAESP", foto: "img/faesp.PNG" };
+const ensaio = { nome: "ENSAIO", atividade: "Anuncio de ensaio", foto: "img/ensaio.jpg" };
+const faesp = { nome: "FAESP", atividade: "Anuncio de FAESP", foto: "img/faesp.PNG" };
 
 const sabadosPadrao = [
   {
     ordem: 1,
     nome: "CULTO DOS JOVENS",
-    atividade: "Primeiro sÃ¡bado do mÃªs",
+    atividade: "Primeiro sabado do mÃªs",
     foto: "img/jovens.png",
-    membros: ["D JoÃ£o", "Coop Eliazer", "D zezinho"]
+    membros: ["D João", "Coop Eliazer", "D zezinho"]
   },
   {
     ordem: 2,
     nome: "SANTA CEIA NA SEDE",
-    atividade: "Segundo sÃ¡bado do mÃªs",
+    atividade: "Segundo sabado do mÃªs",
     foto: "img/adbelem.jpeg",
   },
   {
     ordem: 3,
-    nome: "CULTO DOS VARÃ•ES",
-    atividade: "Terceiro sÃ¡bado do mÃªs",
+    nome: "CULTO DOS VARÕEES",
+    atividade: "Terceiro sabado do mÃªs",
     foto: "img/varoes.jpeg",
     membros: ["D Carlinhos", "D Reginaldo"]
   },
   {
     ordem: 4,
     nome: "CULTO DOS ADOLESCENTES",
-    atividade: "Quarto sÃ¡bado do mÃªs",
+    atividade: "Quarto sabado do mÃªs",
     foto: "img/adolecentes.png",
     membros: ["Coop Manuel", "D Paulo", "D Reginaldo"]
   },
   {
     ordem: 5,
     nome: "ESCALA A DEFINIR",
-    atividade: "Quinto sÃ¡bado (quando houver)",
+    atividade: "Quinto sabado (quando houver)",
     foto: "img/adbelem.jpeg",
     membros: []
   }
@@ -251,7 +251,7 @@ function getSaturdayConfig(ordem) {
 
 function getResponsavelPadraoSabado(ordem) {
   const defaults = {
-    1: "D JoÃ£o",
+    1: "D João",
     2: "Todos os obreiros",
     3: "D Carlinhos",
     4: "Coop Manuel",
@@ -387,8 +387,8 @@ function formatDate(date) {
 }
 
 function nomeDiaSemana(day) {
-  const nomes = ["Domingo", "Segunda-feira", "TerÃ§a-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "SÃ¡bado"];
-  return nomes[day] || "Dia nÃ£o definido";
+  const nomes = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+  return nomes[day] || "Dia não definido";
 }
 
 function renderCalendar() {
@@ -403,7 +403,7 @@ function renderCalendar() {
     month: "long",
     year: "numeric"
   });
-  monthNoticeEl.textContent = "Aviso geral: nos dias de escala o responsÃ¡vel permanece com a atividade de abrir e fechar a igreja.";
+  monthNoticeEl.textContent = "Aviso geral: nos dias de escala o responsavel permanece com a atividade de abrir e fechar a igreja.";
 
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
@@ -574,15 +574,15 @@ async function handleMemberListClick(event) {
 
   if (!memberName) return;
 
-  const confirmed = window.confirm(`Excluir ${memberName} da escala e dos sÃ¡bados especiais?`);
+  const confirmed = window.confirm(`Excluir ${memberName} da escala e dos sabados especiais?`);
   if (!confirmed) return;
 
   try {
     await excluirIntegrante(memberName, memberId);
-    showToast("Integrante excluÃ­do com sucesso.");
+    showToast("Integrante excluído com sucesso.");
   } catch (error) {
     console.error("Erro ao excluir integrante:", error);
-    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel excluir o integrante.");
+    showToast(error instanceof Error ? error.message : "Não foi possível excluir o integrante.");
   }
 }
 
@@ -791,7 +791,7 @@ async function salvarPessoaNoSabadoSelecionado(event) {
   const file = saturdayPersonPhotoInputEl.files?.[0] || null;
 
   if (!nome || !cargo) {
-    showToast("Preencha nome e cargo da pessoa do sÃ¡bado.");
+    showToast("Preencha nome e cargo da pessoa do sabado.");
     return;
   }
 
@@ -824,10 +824,10 @@ async function salvarPessoaNoSabadoSelecionado(event) {
     renderSaturdayMemberOptions();
     preencherFormularioSabadoSelecionado();
     fecharModalCadastroPessoaSabado();
-    showToast(`Pessoa ${saturdayPersonEditingSlotIndex + 1} atualizada no sÃ¡bado selecionado.`);
+    showToast(`Pessoa ${saturdayPersonEditingSlotIndex + 1} atualizada no sabado selecionado.`);
   } catch (error) {
-    console.error("Erro ao salvar pessoa do sÃ¡bado:", error);
-    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar a pessoa do sÃ¡bado.");
+    console.error("Erro ao salvar pessoa do sabado:", error);
+    showToast(error instanceof Error ? error.message : "Não foi possível salvar a pessoa do sabado.");
   }
 }
 
@@ -864,15 +864,15 @@ async function handleSaturdayListClick(event) {
   const ordem = Number(button.dataset.ordem);
   if (!ordem) return;
 
-  const confirmed = window.confirm(`Excluir o cadastro do ${ordem}Âº sÃ¡bado e voltar ao padrÃ£o original?`);
+  const confirmed = window.confirm(`Excluir o cadastro do ${ordem}º sábado e voltar ao padrão original?`);
   if (!confirmed) return;
 
   try {
     await excluirCadastroSabado(ordem);
-    showToast("Cadastro do sÃ¡bado excluÃ­do com sucesso.");
+    showToast("Cadastro do sábado excluído com sucesso.");
   } catch (error) {
-    console.error("Erro ao excluir sÃ¡bado:", error);
-    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel excluir o cadastro do sÃ¡bado.");
+    console.error("Erro ao excluir sábado:", error);
+    showToast(error instanceof Error ? error.message : "Não foi possível excluir o cadastro do sábado.");
   }
 }
 
@@ -903,7 +903,7 @@ function abrirModal(pessoa, isSabado) {
 
   modalNomeEl.textContent = pessoa.nome || "";
   modalCargoEl.textContent = isSabado
-    ? "Cadastro especÃ­fico de 3 pessoas para o sÃ¡bado"
+    ? "Cadastro específico de 3 pessoas para o sábado"
     : pessoa.cargo || "";
   modalEnderecoEl.textContent = pessoa.endereco || "";
   modalContatoEl.textContent = pessoa.contato || "";
@@ -934,7 +934,7 @@ function atualizarVisibilidadeAdmin() {
   const autenticado = isAdminAutenticado();
   adminPanelEl.classList.toggle("hidden", !autenticado);
   adminLogoutBtn.classList.toggle("hidden", !autenticado);
-  adminAccessBtn.textContent = autenticado ? "Painel do administrador" : "Ãrea do administrador";
+  adminAccessBtn.textContent = autenticado ? "Painel do administrador" : "Área do administrador";
   if (autenticado && state.authUser?.email) {
     adminAuthMessageEl.textContent = `Conectado como ${state.authUser.email}.`;
   } else {
@@ -956,7 +956,7 @@ function traduzirErroAuth(error) {
     "auth/network-request-failed": "Falha de rede. Verifique a conexÃ£o e tente novamente.",
     "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos e tente novamente."
   };
-  return mensagens[code] || "NÃ£o foi possÃ­vel autenticar no Firebase.";
+  return mensagens[code] || "Não foi possível autenticar no Firebase.";
 }
 
 function validarCamposLoginAdmin() {
@@ -1006,8 +1006,8 @@ async function sairModoAdmin() {
     fecharAdminModal();
     showToast("Modo administrador encerrado.");
   } catch (error) {
-    console.error("Erro ao encerrar sessÃ£o do administrador:", error);
-    showToast("NÃ£o foi possÃ­vel encerrar a sessÃ£o agora.");
+    console.error("Erro ao encerrar sessão do administrador:", error);
+    showToast("Não foi possível encerrar a sessão agora.");
   }
 }
 
@@ -1027,7 +1027,7 @@ function checarAlerta17h() {
 
   localStorage.setItem(storageKey, "1");
   const { pessoa } = pessoaParaData(now);
-  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programaÃ§Ã£o"}`);
+  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
 }
 
 function atualizarPreviewArquivo(inputEl, previewEl) {
@@ -1099,7 +1099,7 @@ function clearFirebaseSubscriptions(includeAuth = true) {
     try {
       state.authUnsubscriber();
     } catch (error) {
-      console.warn("Erro ao remover listener de autenticaÃ§Ã£o:", error);
+      console.warn("Erro ao remover listener de autenticação:", error);
     }
   }
   state.authUnsubscriber = null;
@@ -1448,7 +1448,7 @@ async function salvarIntegrante(event) {
     showToast(integranteAtual ? "Integrante atualizado com sucesso." : "Integrante salvo com sucesso.");
   } catch (error) {
     console.error("Erro ao salvar integrante:", error);
-    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar o integrante.");
+    showToast(error instanceof Error ? error.message : "Não foi possível salvar o integrante.");
   }
 }
 
@@ -1456,7 +1456,7 @@ async function saveMemberRecord(member, editingContext = null, currentMember = n
   if (editingContext && editingContext.source === "base") {
     const baseIndex = Number(editingContext.baseIndex);
     if (!Number.isInteger(baseIndex) || !baseGrupo[baseIndex]) {
-      throw new Error("Integrante base nÃ£o encontrado para ediÃ§Ã£o.");
+      throw new Error("Integrante base não encontrado para edição.");
     }
 
     baseGrupo[baseIndex] = {
@@ -1625,7 +1625,7 @@ async function salvarSabado(event) {
   };
 
   if (!config.nome || !config.atividade) {
-    showToast("Preencha o nome e a atividade do sÃ¡bado.");
+    showToast("Preencha o nome e a atividade do sabado.");
     return;
   }
 
@@ -1645,8 +1645,8 @@ async function salvarSabado(event) {
     preencherFormularioSabadoSelecionado();
     showToast("SÃ¡bado salvo com sucesso.");
   } catch (error) {
-    console.error("Erro ao salvar sÃ¡bado:", error);
-    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar o sÃ¡bado.");
+    console.error("Erro ao salvar sábado:", error);
+    showToast(error instanceof Error ? error.message : "Não foi possível salvar o sábado.");
   }
 }
 
@@ -1682,7 +1682,7 @@ async function salvarFirebaseConfig(event) {
   };
 
   localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(config));
-  showToast("ConfiguraÃ§Ã£o do Firebase salva.");
+  showToast("Configuração do Firebase salva.");
   state.firebaseReady = false;
   state.firebase = null;
   await initFirebaseIfConfigured();
@@ -1696,9 +1696,9 @@ function limparFirebaseConfig() {
   state.authUser = null;
   atualizarVisibilidadeAdmin();
   firebaseFormEl.reset();
-  setFirebaseStatus("nÃ£o configurado");
+  setFirebaseStatus("não configurado");
   loadCustomMembers();
-  showToast("ConfiguraÃ§Ã£o do Firebase removida.");
+  showToast("Configuração do Firebase removida.");
 }
 
 function bootstrap() {
