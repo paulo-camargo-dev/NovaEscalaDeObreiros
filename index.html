@@ -62,7 +62,7 @@
         <div class="card info-card">
           <div class="section-head compact">
             <div>
-              <span class="section-kicker">PRÓXIMA</span>
+              <span class="section-kicker">PRÕXIMA</span>
               <h2>Programação</h2>
             </div>
           </div>
@@ -78,7 +78,7 @@
               <p id="nextSaturdaySubtitle"></p>
             </div>
             <div class="panel-card mini">
-              <span class="panel-label">Integrantes da escala mensal</span>
+              <span class="panel-label">Integrantes na escala MENSAL</span>
               <strong id="memberCount">0</strong>
               <p>Base fixa + novos cadastros</p>
             </div>
@@ -152,6 +152,7 @@
               <img id="uploadPreview" class="upload-preview hidden" alt="Pré-visualização da foto" />
             </div>
             <button id="saveMemberBtn" class="primary-btn" type="submit">Salvar integrante</button>
+            <button id="cancelMemberEditBtn" class="ghost-btn small hidden" type="button">Cancelar edição</button>
           </form>
 
           <div class="firebase-box">
@@ -201,10 +202,6 @@
               <input name="nome" type="text" placeholder="Ex.: Culto dos Jovens" required />
             </label>
             <label>
-              Nome do obreiro responsÃ¡vel
-              <input name="responsavel" type="text" placeholder="Ex.: D. JoÃ£o ou Todos os obreiros" required />
-            </label>
-            <label>
               Descrição / atividade
               <input name="atividade" type="text" placeholder="Ex.: Primeiro sábado do mês" required />
             </label>
@@ -217,15 +214,15 @@
             </div>
             <div class="member-form saturday-people-grid">
               <label>
-                Pessoa 1
+                <button type="button" class="saturday-person-trigger" data-slot-index="0">Pessoa 1</button>
                 <select id="saturdayMember1" name="membro1" required></select>
               </label>
               <label>
-                Pessoa 2
+                <button type="button" class="saturday-person-trigger" data-slot-index="1">Pessoa 2</button>
                 <select id="saturdayMember2" name="membro2" required></select>
               </label>
               <label>
-                Pessoa 3
+                <button type="button" class="saturday-person-trigger" data-slot-index="2">Pessoa 3</button>
                 <select id="saturdayMember3" name="membro3" required></select>
               </label>
             </div>
@@ -308,6 +305,33 @@
           </label>
           <button class="primary-btn" type="submit">Entrar</button>
           <button id="adminLogoutBtn" class="ghost-btn hidden" type="button">Sair do modo admin</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="saturdayPersonModal" class="modal" aria-hidden="true">
+    <div class="modal-content admin-modal-content">
+      <button id="closeSaturdayPersonModal" class="close-modal" type="button" aria-label="Fechar">×</button>
+      <div class="modal-body">
+        <h2 id="saturdayPersonModalTitle">Cadastro da Pessoa do Sábado</h2>
+        <form id="saturdayPersonForm" class="member-form">
+          <label>
+            Nome
+            <input id="saturdayPersonName" name="nomePessoaSabado" type="text" placeholder="Nome da pessoa" required />
+          </label>
+          <label>
+            Cargo
+            <input id="saturdayPersonRole" name="cargoPessoaSabado" type="text" placeholder="Ex.: Diácono, Cooperador" required />
+          </label>
+          <label>
+            Foto
+            <input id="saturdayPersonPhotoInput" name="fotoPessoaSabado" type="file" accept="image/*" />
+          </label>
+          <div class="preview-wrap">
+            <img id="saturdayPersonPreview" class="upload-preview hidden" alt="Pré-visualização da pessoa do sábado" />
+          </div>
+          <button class="primary-btn" type="submit">Salvar pessoa no sábado</button>
         </form>
       </div>
     </div>

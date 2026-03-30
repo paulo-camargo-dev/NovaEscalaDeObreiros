@@ -116,6 +116,8 @@ const state = {
   firebaseReady: false,
   firebase: null
 };
+let memberEditingContext = null;
+let saturdayPersonEditingSlotIndex = null;
 
 const calendarEl = document.getElementById("calendar");
 const monthYearEl = document.getElementById("monthYear");
@@ -137,6 +139,8 @@ const memberListEl = document.getElementById("memberList");
 const memberFormEl = document.getElementById("memberForm");
 const fotoInputEl = document.getElementById("fotoInput");
 const uploadPreviewEl = document.getElementById("uploadPreview");
+const saveMemberBtnEl = document.getElementById("saveMemberBtn");
+const cancelMemberEditBtnEl = document.getElementById("cancelMemberEditBtn");
 const firebaseFormEl = document.getElementById("firebaseForm");
 const firebaseStatusEl = document.getElementById("firebaseStatus");
 const toggleFirebaseConfigBtn = document.getElementById("toggleFirebaseConfig");
@@ -151,6 +155,14 @@ const saturdayMemberSelectEls = [
   document.getElementById("saturdayMember2"),
   document.getElementById("saturdayMember3")
 ];
+const saturdayPersonTriggerEls = Array.from(document.querySelectorAll(".saturday-person-trigger"));
+const saturdayPersonModalEl = document.getElementById("saturdayPersonModal");
+const saturdayPersonFormEl = document.getElementById("saturdayPersonForm");
+const saturdayPersonModalTitleEl = document.getElementById("saturdayPersonModalTitle");
+const saturdayPersonNameEl = document.getElementById("saturdayPersonName");
+const saturdayPersonRoleEl = document.getElementById("saturdayPersonRole");
+const saturdayPersonPhotoInputEl = document.getElementById("saturdayPersonPhotoInput");
+const saturdayPersonPreviewEl = document.getElementById("saturdayPersonPreview");
 const saturdayListEl = document.getElementById("saturdayList");
 const monthNoticeEl = document.getElementById("monthNotice");
 const adminPanelEl = document.getElementById("adminPanel");
@@ -170,10 +182,17 @@ document.getElementById("clearFirebaseConfig").addEventListener("click", limparF
 memberFormEl.addEventListener("submit", salvarIntegrante);
 firebaseFormEl.addEventListener("submit", salvarFirebaseConfig);
 fotoInputEl.addEventListener("change", () => atualizarPreviewArquivo(fotoInputEl, uploadPreviewEl));
+cancelMemberEditBtnEl.addEventListener("click", cancelarEdicaoIntegrante);
 memberModeSelectEl.addEventListener("change", atualizarCampoDiaFixo);
 saturdayFormEl.addEventListener("submit", salvarSabado);
 saturdayPhotoInputEl.addEventListener("change", () => atualizarPreviewArquivo(saturdayPhotoInputEl, saturdayPreviewEl));
 saturdayOrderSelectEl.addEventListener("change", preencherFormularioSabadoSelecionado);
+saturdayPersonTriggerEls.forEach((triggerEl) => {
+  triggerEl.addEventListener("click", () => abrirModalCadastroPessoaSabado(Number(triggerEl.dataset.slotIndex)));
+});
+saturdayPersonFormEl.addEventListener("submit", salvarPessoaNoSabadoSelecionado);
+saturdayPersonPhotoInputEl.addEventListener("change", () => atualizarPreviewArquivo(saturdayPersonPhotoInputEl, saturdayPersonPreviewEl));
+document.getElementById("closeSaturdayPersonModal").addEventListener("click", fecharModalCadastroPessoaSabado);
 memberListEl.addEventListener("click", handleMemberListClick);
 saturdayListEl.addEventListener("click", handleSaturdayListClick);
 adminAccessBtn.addEventListener("click", abrirAdminModal);
@@ -187,16 +206,31 @@ modalEl.addEventListener("click", (event) => {
 adminModalEl.addEventListener("click", (event) => {
   if (event.target === adminModalEl) fecharAdminModal();
 });
+saturdayPersonModalEl.addEventListener("click", (event) => {
+  if (event.target === saturdayPersonModalEl) fecharModalCadastroPessoaSabado();
+});
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     fecharModal();
     fecharAdminModal();
+    fecharModalCadastroPessoaSabado();
   }
 });
 
 function getGrupoCompleto() {
+  return getGrupoComOrigem().map((item) => item.pessoa);
+}
+
+function getGrupoComOrigem() {
   const hiddenNames = new Set(state.hiddenMemberNames);
-  return [...baseGrupo, ...state.customMembers].filter((pessoa) => !hiddenNames.has(pessoa.nome));
+  const base = baseGrupo
+    .map((pessoa, baseIndex) => ({ pessoa, source: "base", baseIndex }))
+    .filter((item) => !hiddenNames.has(item.pessoa.nome));
+  const custom = state.customMembers
+    .map((pessoa, customIndex) => ({ pessoa, source: "custom", customIndex }))
+    .filter((item) => !hiddenNames.has(item.pessoa.nome));
+
+  return [...base, ...custom];
 }
 
 function getIntegrantesSequenciais() {
@@ -225,11 +259,30 @@ function getResponsavelPadraoSabado(ordem) {
 }
 
 function normalizarSabadoConfig(config) {
+  const membrosDetalhes = Array.from({ length: REQUIRED_SATURDAY_MEMBERS }, (_, index) => {
+    const detalhe = Array.isArray(config.membrosDetalhes) ? config.membrosDetalhes[index] : null;
+    if (!detalhe || typeof detalhe !== "object") return null;
+    return {
+      nome: String(detalhe.nome || "").trim(),
+      cargo: String(detalhe.cargo || "").trim(),
+      foto: String(detalhe.foto || "").trim()
+    };
+  });
+
   return {
     ...config,
     responsavel: config.responsavel || getResponsavelPadraoSabado(Number(config.ordem)),
-    membros: (config.membros || []).filter((nome) => !state.hiddenMemberNames.includes(nome))
+    membros: (config.membros || []).filter((nome) => !state.hiddenMemberNames.includes(nome)),
+    membrosDetalhes
   };
+}
+
+function getDetalheMembroSabado(config, index) {
+  if (!config || !Array.isArray(config.membrosDetalhes)) return null;
+  const detalhe = config.membrosDetalhes[index];
+  if (!detalhe) return null;
+  if (!detalhe.nome && !detalhe.cargo && !detalhe.foto) return null;
+  return detalhe;
 }
 
 function mudarMes(delta) {
@@ -370,20 +423,21 @@ function renderCalendar() {
     card.innerHTML = "";
 
     if (pessoa) {
-      const responsavelHtml = tipo === "sabado" && pessoa.responsavel
-        ? `<div class="group-members"><span>Responsável: ${pessoa.responsavel}</span></div>`
-        : "";
+      const responsavelHtml = "";
       const membrosHtml = Array.isArray(pessoa.membros) && pessoa.membros.length
         ? `<div class="group-members group-members-sabado"><span>Todos os obreiros estão escalados</span></div>`
         : Array.isArray(pessoa.membros) && pessoa.membros.length
         ? `
           <div class="group-members ${tipo === "sabado" ? "group-members-sabado" : ""}">
-            ${pessoa.membros.map((nome) => {
+            ${pessoa.membros.map((nome, index) => {
+              const detalhe = getDetalheMembroSabado(pessoa, index);
               const membro = findPessoaByNome(nome);
-              if (tipo === "sabado" && membro?.foto) {
-                return `<span class="member-badge"><img src="${membro.foto}" alt="${nome}"><small>${nome}</small></span>`;
+              const nomeExibicao = detalhe?.nome || nome;
+              const fotoExibicao = detalhe?.foto || membro?.foto || "";
+              if (tipo === "sabado" && fotoExibicao) {
+                return `<span class="member-badge"><img src="${fotoExibicao}" alt="${nomeExibicao}"><small>${nomeExibicao}</small></span>`;
               }
-              return `<span>${nome}</span>`;
+              return `<span>${nomeExibicao}</span>`;
             }).join("")}
           </div>
         `
@@ -391,12 +445,15 @@ function renderCalendar() {
       const membrosHtmlRender = Array.isArray(pessoa.membros) && pessoa.membros.length
         ? `
           <div class="group-members ${tipo === "sabado" ? "group-members-sabado" : ""}">
-            ${pessoa.membros.map((nome) => {
+            ${pessoa.membros.map((nome, index) => {
+              const detalhe = getDetalheMembroSabado(pessoa, index);
               const membro = findPessoaByNome(nome);
-              if (tipo === "sabado" && membro?.foto) {
-                return `<span class="member-badge"><img src="${membro.foto}" alt="${nome}"><small>${nome}</small></span>`;
+              const nomeExibicao = detalhe?.nome || nome;
+              const fotoExibicao = detalhe?.foto || membro?.foto || "";
+              if (tipo === "sabado" && fotoExibicao) {
+                return `<span class="member-badge"><img src="${fotoExibicao}" alt="${nomeExibicao}"><small>${nomeExibicao}</small></span>`;
               }
-              return `<span>${nome}</span>`;
+              return `<span>${nomeExibicao}</span>`;
             }).join("")}
           </div>
         `
@@ -454,7 +511,7 @@ function updateDashboard() {
   const saturdayInfo = pessoaParaData(nextSaturday);
 
   todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programação";
-  todaySubtitleEl.textContent = todayInfo.pessoa
+ todaySubtitleEl.textContent = todayInfo.pessoa
   ? `${todayInfo.pessoa.atividade || "Sem atividade"}`
   : "Sem programação";
 
@@ -494,11 +551,23 @@ function renderUpcomingList() {
 }
 
 async function handleMemberListClick(event) {
-  const button = event.target.closest(".member-delete-btn");
-  if (!button) return;
+  const editButton = event.target.closest(".member-edit-btn");
+  if (editButton) {
+    iniciarEdicaoIntegrante({
+      source: editButton.dataset.memberSource,
+      baseIndex: editButton.dataset.baseIndex ? Number(editButton.dataset.baseIndex) : null,
+      customIndex: editButton.dataset.customIndex ? Number(editButton.dataset.customIndex) : null,
+      memberId: editButton.dataset.memberId || "",
+      memberName: editButton.dataset.memberName || ""
+    });
+    return;
+  }
 
-  const memberName = button.dataset.memberName || "";
-  const memberId = button.dataset.memberId || "";
+  const deleteButton = event.target.closest(".member-delete-btn");
+  if (!deleteButton) return;
+
+  const memberName = deleteButton.dataset.memberName || "";
+  const memberId = deleteButton.dataset.memberId || "";
 
   if (!memberName) return;
 
@@ -515,8 +584,10 @@ async function handleMemberListClick(event) {
 }
 
 function renderMemberList() {
-  const group = getGrupoCompleto();
-  memberListEl.innerHTML = group.map((pessoa, index) => `
+  const group = getGrupoComOrigem();
+  memberListEl.innerHTML = group.map((item, index) => {
+    const pessoa = item.pessoa;
+    return `
     <article class="member-item">
       <img src="${pessoa.foto}" alt="${pessoa.nome}">
       <div>
@@ -525,27 +596,135 @@ function renderMemberList() {
         <span>${pessoa.modoEscala === "fixo" ? `Dia fixo: ${nomeDiaSemana(Number(pessoa.diaFixo))}` : "Escala sequencial"}</span>
         <span>${pessoa.contato || "Contato não informado"}</span>
       </div>
-      <button
-        type="button"
-        class="ghost-btn small member-delete-btn"
-        data-member-name="${pessoa.nome}"
-        data-member-id="${pessoa.id || ""}"
-      >
-        Excluir
-      </button>
+      <div class="member-actions">
+        <button
+          type="button"
+          class="member-icon-btn member-edit-btn"
+          title="Editar integrante"
+          aria-label="Editar integrante"
+          data-member-source="${item.source}"
+          data-base-index="${item.baseIndex ?? ""}"
+          data-custom-index="${item.customIndex ?? ""}"
+          data-member-name="${pessoa.nome}"
+          data-member-id="${pessoa.id || ""}"
+        >
+          &#9998;
+        </button>
+        <button
+          type="button"
+          class="member-icon-btn member-delete-btn"
+          title="Excluir integrante"
+          aria-label="Excluir integrante"
+          data-member-name="${pessoa.nome}"
+          data-member-id="${pessoa.id || ""}"
+        >
+          &#128465;
+        </button>
+      </div>
     </article>
-  `).join("");
+  `;
+  }).join("");
+}
+
+function getIntegranteByContext(context) {
+  if (!context) return null;
+
+  if (context.source === "base") {
+    return baseGrupo[context.baseIndex] || null;
+  }
+
+  if (context.source === "custom") {
+    if (Number.isInteger(context.customIndex)) {
+      const byIndex = state.customMembers[context.customIndex];
+      if (byIndex && (!context.memberId || byIndex.id === context.memberId)) return byIndex;
+    }
+    if (context.memberId) {
+      const byId = state.customMembers.find((item) => item.id === context.memberId);
+      if (byId) return byId;
+    }
+    if (context.memberName) {
+      return state.customMembers.find((item) => item.nome === context.memberName) || null;
+    }
+  }
+
+  return null;
+}
+
+function preencherFormularioIntegrante(integrante) {
+  memberFormEl.elements.namedItem("nome").value = integrante.nome || "";
+  memberFormEl.elements.namedItem("cargo").value = integrante.cargo || "";
+  memberFormEl.elements.namedItem("endereco").value = integrante.endereco || "";
+  memberFormEl.elements.namedItem("contato").value = integrante.contato || "";
+  memberFormEl.elements.namedItem("atividade").value = integrante.atividade || "";
+  memberModeSelectEl.value = integrante.modoEscala || "sequencia";
+  atualizarCampoDiaFixo();
+  memberFormEl.elements.namedItem("diaFixo").value = String(
+    integrante.modoEscala === "fixo" && integrante.diaFixo !== ""
+      ? integrante.diaFixo
+      : 0
+  );
+  fotoInputEl.value = "";
+  uploadPreviewEl.src = integrante.foto || "";
+  uploadPreviewEl.classList.toggle("hidden", !integrante.foto);
+}
+
+function atualizarEstadoEdicaoIntegrante() {
+  const isEditing = Boolean(memberEditingContext);
+  saveMemberBtnEl.textContent = isEditing ? "Salvar alterações" : "Salvar integrante";
+  cancelMemberEditBtnEl.classList.toggle("hidden", !isEditing);
+}
+
+function resetMemberForm() {
+  memberFormEl.reset();
+  memberModeSelectEl.value = "sequencia";
+  atualizarCampoDiaFixo();
+  fotoInputEl.value = "";
+  uploadPreviewEl.src = "";
+  uploadPreviewEl.classList.add("hidden");
+}
+
+function iniciarEdicaoIntegrante(context) {
+  const integrante = getIntegranteByContext(context);
+  if (!integrante) {
+    showToast("Não foi possível abrir este integrante para edição.");
+    return;
+  }
+
+  memberEditingContext = context;
+  preencherFormularioIntegrante(integrante);
+  atualizarEstadoEdicaoIntegrante();
+  memberFormEl.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function limparEdicaoIntegrante({ limparFormulario = true } = {}) {
+  memberEditingContext = null;
+  if (limparFormulario) {
+    resetMemberForm();
+  }
+  atualizarEstadoEdicaoIntegrante();
+}
+
+function cancelarEdicaoIntegrante() {
+  limparEdicaoIntegrante({ limparFormulario: true });
+  showToast("Edição cancelada.");
 }
 
 function renderSaturdayMemberOptions() {
-  const integrantes = getGrupoCompleto();
+  const nomesIntegrantes = getGrupoCompleto().map((pessoa) => pessoa.nome);
+  const nomesSabados = state.saturdayConfigs.flatMap((config) => (config.membros || []).filter(Boolean));
+  const nomesDetalhesSabados = state.saturdayConfigs.flatMap((config) => (
+    (config.membrosDetalhes || []).map((detalhe) => detalhe?.nome || "").filter(Boolean)
+  ));
+  const integrantes = Array.from(new Set([...nomesIntegrantes, ...nomesSabados, ...nomesDetalhesSabados]))
+    .map((nome) => ({ nome }));
   const optionsHtml = `
     <option value="">Selecione um integrante</option>
     ${integrantes.map((pessoa) => `<option value="${pessoa.nome}">${pessoa.nome}</option>`).join("")}
   `;
 
   saturdayMemberSelectEls.forEach((selectEl) => {
-    const currentValue = selectEl.value;
+    const currentValue = selectEl?.value;
+    if (!selectEl) return;
     selectEl.innerHTML = optionsHtml;
     if (currentValue && integrantes.some((pessoa) => pessoa.nome === currentValue)) {
       selectEl.value = currentValue;
@@ -560,7 +739,6 @@ function preencherFormularioSabadoSelecionado() {
   if (!config) return;
 
   saturdayFormEl.elements.namedItem("nome").value = config.nome || "";
-  saturdayFormEl.elements.namedItem("responsavel").value = config.responsavel || "";
   saturdayFormEl.elements.namedItem("atividade").value = config.atividade || "";
 
   saturdayMemberSelectEls.forEach((selectEl, index) => {
@@ -571,17 +749,96 @@ function preencherFormularioSabadoSelecionado() {
   saturdayPreviewEl.classList.toggle("hidden", !config.foto);
 }
 
+function abrirModalCadastroPessoaSabado(slotIndex) {
+  if (!Number.isInteger(slotIndex) || slotIndex < 0 || slotIndex >= REQUIRED_SATURDAY_MEMBERS) return;
+
+  const ordem = Number(saturdayOrderSelectEl.value);
+  const config = getSaturdayConfig(ordem);
+  const nomeSelecionado = saturdayMemberSelectEls[slotIndex]?.value || "";
+  const detalheAtual = getDetalheMembroSabado(config, slotIndex);
+  const pessoaExistente = findPessoaByNome(nomeSelecionado);
+
+  saturdayPersonEditingSlotIndex = slotIndex;
+  saturdayPersonModalTitleEl.textContent = `Cadastro da Pessoa ${slotIndex + 1} do ${ordem}º sábado`;
+  saturdayPersonNameEl.value = detalheAtual?.nome || nomeSelecionado || "";
+  saturdayPersonRoleEl.value = detalheAtual?.cargo || pessoaExistente?.cargo || "";
+  saturdayPersonPhotoInputEl.value = "";
+  saturdayPersonPreviewEl.src = detalheAtual?.foto || pessoaExistente?.foto || "";
+  saturdayPersonPreviewEl.classList.toggle("hidden", !saturdayPersonPreviewEl.src);
+
+  saturdayPersonModalEl.classList.add("show");
+  saturdayPersonModalEl.setAttribute("aria-hidden", "false");
+  saturdayPersonNameEl.focus();
+}
+
+function fecharModalCadastroPessoaSabado() {
+  saturdayPersonModalEl.classList.remove("show");
+  saturdayPersonModalEl.setAttribute("aria-hidden", "true");
+  saturdayPersonEditingSlotIndex = null;
+}
+
+async function salvarPessoaNoSabadoSelecionado(event) {
+  event.preventDefault();
+  if (!Number.isInteger(saturdayPersonEditingSlotIndex)) return;
+
+  const ordem = Number(saturdayOrderSelectEl.value);
+  const configAtual = getSaturdayConfig(ordem);
+  const nome = saturdayPersonNameEl.value.trim();
+  const cargo = saturdayPersonRoleEl.value.trim();
+  const file = saturdayPersonPhotoInputEl.files?.[0] || null;
+
+  if (!nome || !cargo) {
+    showToast("Preencha nome e cargo da pessoa do sábado.");
+    return;
+  }
+
+  try {
+    let foto = saturdayPersonPreviewEl.src || "";
+    if (file) {
+      validarImagemParaBase64(file);
+      foto = await fileToBase64(file);
+    }
+
+    const membros = Array.from({ length: REQUIRED_SATURDAY_MEMBERS }, (_, index) => (
+      saturdayMemberSelectEls[index]?.value?.trim() || configAtual.membros?.[index] || ""
+    ));
+    membros[saturdayPersonEditingSlotIndex] = nome;
+
+    const membrosDetalhes = Array.from({ length: REQUIRED_SATURDAY_MEMBERS }, (_, index) => {
+      const atual = getDetalheMembroSabado(configAtual, index);
+      return atual ? { ...atual } : null;
+    });
+    membrosDetalhes[saturdayPersonEditingSlotIndex] = { nome, cargo, foto };
+
+    const configAtualizado = normalizarSabadoConfig({
+      ...configAtual,
+      membros,
+      membrosDetalhes
+    });
+
+    await saveSaturdayRecord(configAtualizado);
+    saturdayOrderSelectEl.value = String(ordem);
+    renderSaturdayMemberOptions();
+    preencherFormularioSabadoSelecionado();
+    fecharModalCadastroPessoaSabado();
+    showToast(`Pessoa ${saturdayPersonEditingSlotIndex + 1} atualizada no sábado selecionado.`);
+  } catch (error) {
+    console.error("Erro ao salvar pessoa do sábado:", error);
+    showToast(error instanceof Error ? error.message : "Não foi possível salvar a pessoa do sábado.");
+  }
+}
+
 function renderSaturdayList() {
   saturdayListEl.innerHTML = [1, 2, 3, 4, 5].map((ordem) => {
     const config = getSaturdayConfig(ordem);
-    const membros = (config.membros || []).length ? config.membros.join(", ") : "Sem integrantes definidos";
+    const nomesMembros = (config.membros || []).filter(Boolean);
+    const membros = nomesMembros.length ? nomesMembros.join(", ") : "Sem integrantes definidos";
 
     return `
       <article class="member-item saturday-item">
         <img src="${config.foto}" alt="${config.nome}">
         <div>
           <strong>${ordem}º sábado - ${config.nome}</strong>
-          <span>Responsável: ${config.responsavel || getResponsavelPadraoSabado(ordem)}</span>
           <span>${config.atividade || "Sem atividade"}</span>
           <span>${membros}</span>
         </div>
@@ -623,12 +880,15 @@ function abrirModal(pessoa, isSabado) {
   modalFotosEl.innerHTML = "";
 
   if (Array.isArray(pessoa.membros) && pessoa.membros.length) {
-    pessoa.membros.forEach((nome) => {
+    pessoa.membros.forEach((nome, index) => {
+      const detalhe = getDetalheMembroSabado(pessoa, index);
       const membro = findPessoaByNome(nome);
-      if (!membro) return;
+      const foto = detalhe?.foto || membro?.foto || "";
+      const nomeExibicao = detalhe?.nome || nome;
+      if (!foto) return;
       const image = document.createElement("img");
-      image.src = membro.foto;
-      image.alt = membro.nome;
+      image.src = foto;
+      image.alt = nomeExibicao;
       modalFotosEl.appendChild(image);
     });
   } else if (pessoa.foto) {
@@ -640,7 +900,7 @@ function abrirModal(pessoa, isSabado) {
 
   modalNomeEl.textContent = pessoa.nome || "";
   modalCargoEl.textContent = isSabado
-    ? `Obreiro responsável: ${pessoa.responsavel || getResponsavelPadraoSabado(Number(pessoa.ordem))}`
+    ? "Cadastro específico de 3 pessoas para o sábado"
     : pessoa.cargo || "";
   modalEnderecoEl.textContent = pessoa.endereco || "";
   modalContatoEl.textContent = pessoa.contato || "";
@@ -972,6 +1232,7 @@ function validarImagemParaBase64(file) {
 async function salvarIntegrante(event) {
   event.preventDefault();
 
+  const integranteAtual = getIntegranteByContext(memberEditingContext);
   const formData = new FormData(memberFormEl);
   const file = fotoInputEl.files?.[0] || null;
   const integrante = normalizarIntegrante({
@@ -982,8 +1243,8 @@ async function salvarIntegrante(event) {
     atividade: formData.get("atividade") || "",
     modoEscala: formData.get("modoEscala") || "sequencia",
     diaFixo: formData.get("modoEscala") === "fixo" ? Number(formData.get("diaFixo")) : "",
-    foto: "",
-    createdAt: Date.now()
+    foto: integranteAtual?.foto || "",
+    createdAt: integranteAtual?.createdAt || Date.now()
   });
 
   if (!integrante.nome || !integrante.cargo) {
@@ -997,21 +1258,57 @@ async function salvarIntegrante(event) {
       integrante.foto = await fileToBase64(file);
     }
 
-    await saveMemberRecord(integrante);
-    memberFormEl.reset();
-    memberModeSelectEl.value = "sequencia";
-    atualizarCampoDiaFixo();
-    fotoInputEl.value = "";
-    uploadPreviewEl.src = "";
-    uploadPreviewEl.classList.add("hidden");
-    showToast("Integrante salvo com sucesso.");
+    await saveMemberRecord(integrante, memberEditingContext, integranteAtual);
+    limparEdicaoIntegrante({ limparFormulario: true });
+    showToast(integranteAtual ? "Integrante atualizado com sucesso." : "Integrante salvo com sucesso.");
   } catch (error) {
     console.error("Erro ao salvar integrante:", error);
     showToast(error instanceof Error ? error.message : "Não foi possível salvar o integrante.");
   }
 }
 
-async function saveMemberRecord(member) {
+async function saveMemberRecord(member, editingContext = null, currentMember = null) {
+  if (editingContext && editingContext.source === "base") {
+    const baseIndex = Number(editingContext.baseIndex);
+    if (!Number.isInteger(baseIndex) || !baseGrupo[baseIndex]) {
+      throw new Error("Integrante base não encontrado para edição.");
+    }
+
+    baseGrupo[baseIndex] = {
+      ...baseGrupo[baseIndex],
+      ...member
+    };
+    renderCalendar();
+    return;
+  }
+
+  if (editingContext && editingContext.source === "custom" && currentMember) {
+    if (state.firebaseReady && state.firebase && currentMember.id) {
+      await state.firebase.setDoc(
+        state.firebase.doc(state.firebase.db, "integrantes", currentMember.id),
+        {
+          ...member,
+          createdAt: currentMember.createdAt || member.createdAt
+        }
+      );
+      await loadCustomMembers();
+      return;
+    }
+
+    const customIndex = state.customMembers.indexOf(currentMember);
+    if (customIndex >= 0) {
+      state.customMembers[customIndex] = {
+        ...currentMember,
+        ...member,
+        id: currentMember.id,
+        createdAt: currentMember.createdAt || member.createdAt
+      };
+      persistLocalMembers(state.customMembers);
+      renderCalendar();
+      return;
+    }
+  }
+
   if (state.firebaseReady && state.firebase) {
     const membersRef = state.firebase.collection(state.firebase.db, "integrantes");
     await state.firebase.addDoc(membersRef, {
@@ -1044,6 +1341,15 @@ function removerIntegranteDosSabados(nome) {
   persistSaturdayConfigs(state.saturdayConfigs);
 }
 
+function limparEdicaoSeIntegranteExcluido(nome, id) {
+  if (!memberEditingContext) return;
+
+  const editingTarget = getIntegranteByContext(memberEditingContext);
+  if (!editingTarget || editingTarget.nome === nome || (id && editingTarget.id === id)) {
+    limparEdicaoIntegrante({ limparFormulario: true });
+  }
+}
+
 async function excluirIntegrante(nome, id) {
   const integranteCustom = state.customMembers.find((item) => item.nome === nome && (!id || item.id === id));
 
@@ -1066,10 +1372,12 @@ async function excluirIntegrante(nome, id) {
       await saveSaturdayRecord(config);
     }
     await loadCustomMembers();
+    limparEdicaoSeIntegranteExcluido(nome, id);
     return;
   }
 
   renderCalendar();
+  limparEdicaoSeIntegranteExcluido(nome, id);
 }
 
 async function excluirCadastroSabado(ordem) {
@@ -1108,19 +1416,30 @@ async function salvarSabado(event) {
   const ordem = Number(formData.get("ordemSabado"));
   const file = saturdayPhotoInputEl.files?.[0] || null;
   const membros = saturdayMemberSelectEls
-    .map((selectEl) => selectEl.value.trim())
-    .filter(Boolean);
+    .map((selectEl) => selectEl.value.trim());
   const atual = getSaturdayConfig(ordem);
+  const membrosDetalhes = Array.from({ length: REQUIRED_SATURDAY_MEMBERS }, (_, index) => {
+    const nomeSelecionado = membros[index] || "";
+    const detalheAtual = getDetalheMembroSabado(atual, index);
+    if (detalheAtual?.nome === nomeSelecionado) return detalheAtual;
+    const integranteAtual = findPessoaByNome(nomeSelecionado);
+    if (!nomeSelecionado) return null;
+    return {
+      nome: nomeSelecionado,
+      cargo: integranteAtual?.cargo || "",
+      foto: integranteAtual?.foto || ""
+    };
+  });
   const config = {
     ordem,
     nome: String(formData.get("nome") || "").trim(),
-    responsavel: String(formData.get("responsavel") || "").trim(),
     atividade: String(formData.get("atividade") || "").trim(),
     foto: atual?.foto || "img/adbelem.jpeg",
-    membros
+    membros,
+    membrosDetalhes
   };
 
-  if (!config.nome || !config.responsavel || !config.atividade) {
+  if (!config.nome || !config.atividade) {
     showToast("Preencha o nome e a atividade do sábado.");
     return;
   }
@@ -1204,6 +1523,7 @@ function bootstrap() {
   checarAlerta17h();
   setInterval(checarAlerta17h, ALERTA_INTERVALO_MS);
   initFirebaseIfConfigured();
+  atualizarEstadoEdicaoIntegrante();
 }
 
 bootstrap();
