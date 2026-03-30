@@ -8,7 +8,7 @@ const SATURDAY_CONFIG_STORAGE_KEY = "escala-saturday-config";
 const HIDDEN_MEMBER_NAMES_STORAGE_KEY = "escala-hidden-member-names";
 const ADMIN_SESSION_STORAGE_KEY = "escala-admin-auth";
 const THEME_PALETTE_STORAGE_KEY = "escala-theme-palette";
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_PASSWORD = "G@by210715";
 const MAX_BASE64_IMAGE_SIZE_BYTES = 700 * 1024;
 const REQUIRED_SATURDAY_MEMBERS = 3;
 
