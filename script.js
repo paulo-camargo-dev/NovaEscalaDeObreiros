@@ -73,27 +73,27 @@ const sabadosPadrao = [
   {
     ordem: 1,
     nome: "CULTO DOS JOVENS",
-    atividade: "Primeiro sabado do mÃªs",
+    atividade: "Primeiro sabado do mês",
     foto: "img/jovens.png",
     membros: ["D João", "Coop Eliazer", "D zezinho"]
   },
   {
     ordem: 2,
     nome: "SANTA CEIA NA SEDE",
-    atividade: "Segundo sabado do mÃªs",
+    atividade: "Segundo sabado do mês",
     foto: "img/adbelem.jpeg",
   },
   {
     ordem: 3,
     nome: "CULTO DOS VARÕEES",
-    atividade: "Terceiro sabado do mÃªs",
+    atividade: "Terceiro sabado do mês",
     foto: "img/varoes.jpeg",
     membros: ["D Carlinhos", "D Reginaldo"]
   },
   {
     ordem: 4,
     nome: "CULTO DOS ADOLESCENTES",
-    atividade: "Quarto sabado do mÃªs",
+    atividade: "Quarto sabado do mês",
     foto: "img/adolecentes.png",
     membros: ["Coop Manuel", "D Paulo", "D Reginaldo"]
   },
@@ -428,7 +428,7 @@ function renderCalendar() {
     if (pessoa) {
       const responsavelHtml = "";
       const membrosHtml = Array.isArray(pessoa.membros) && pessoa.membros.length
-        ? `<div class="group-members group-members-sabado"><span>Todos os obreiros estÃ£o escalados</span></div>`
+        ? `<div class="group-members group-members-sabado"><span>Todos os obreiros estão escalados</span></div>`
         : Array.isArray(pessoa.membros) && pessoa.membros.length
         ? `
           <div class="group-members ${tipo === "sabado" ? "group-members-sabado" : ""}">
@@ -513,12 +513,12 @@ function updateDashboard() {
   const todayInfo = pessoaParaData(today);
   const saturdayInfo = pessoaParaData(nextSaturday);
 
-  todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programaÃ§Ã£o";
+  todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programação";
  todaySubtitleEl.textContent = todayInfo.pessoa
   ? `${todayInfo.pessoa.atividade || "Sem atividade"}`
-  : "Sem programaÃ§Ã£o";
+  : "Sem programação";
 
-  nextSaturdayTitleEl.textContent = saturdayInfo.pessoa ? saturdayInfo.pessoa.nome : "Sem programaÃ§Ã£o";
+  nextSaturdayTitleEl.textContent = saturdayInfo.pessoa ? saturdayInfo.pessoa.nome : "Sem programação";
   nextSaturdaySubtitleEl.textContent = `${formatDate(nextSaturday)} â€¢ ${saturdayInfo.pessoa?.atividade || ""}`;
   memberCountEl.textContent = String(getGrupoCompleto().length);
 
@@ -597,7 +597,7 @@ function renderMemberList() {
         <strong>${index + 1}. ${pessoa.nome}</strong>
         <span>${pessoa.cargo || "Sem cargo"}</span>
         <span>${pessoa.modoEscala === "fixo" ? `Dia fixo: ${nomeDiaSemana(Number(pessoa.diaFixo))}` : "Escala sequencial"}</span>
-        <span>${pessoa.contato || "Contato nÃ£o informado"}</span>
+        <span>${pessoa.contato || "Contato não informado"}</span>
       </div>
       <div class="member-actions">
         <button
@@ -673,7 +673,7 @@ function preencherFormularioIntegrante(integrante) {
 
 function atualizarEstadoEdicaoIntegrante() {
   const isEditing = Boolean(memberEditingContext);
-  saveMemberBtnEl.textContent = isEditing ? "Salvar alteraÃ§Ãµes" : "Salvar integrante";
+  saveMemberBtnEl.textContent = isEditing ? "Salvar alterações" : "Salvar integrante";
   cancelMemberEditBtnEl.classList.toggle("hidden", !isEditing);
 }
 
@@ -689,7 +689,7 @@ function resetMemberForm() {
 function iniciarEdicaoIntegrante(context) {
   const integrante = getIntegranteByContext(context);
   if (!integrante) {
-    showToast("NÃ£o foi possÃ­vel abrir este integrante para ediÃ§Ã£o.");
+    showToast("Não foi possível abrir este integrante para edição.");
     return;
   }
 
@@ -709,7 +709,7 @@ function limparEdicaoIntegrante({ limparFormulario = true } = {}) {
 
 function cancelarEdicaoIntegrante() {
   limparEdicaoIntegrante({ limparFormulario: true });
-  showToast("EdiÃ§Ã£o cancelada.");
+  showToast("Edição cancelada.");
 }
 
 function renderSaturdayMemberOptions() {
@@ -762,7 +762,7 @@ function abrirModalCadastroPessoaSabado(slotIndex) {
   const pessoaExistente = findPessoaByNome(nomeSelecionado);
 
   saturdayPersonEditingSlotIndex = slotIndex;
-  saturdayPersonModalTitleEl.textContent = `Cadastro da Pessoa ${slotIndex + 1} do ${ordem}Âº sÃ¡bado`;
+  saturdayPersonModalTitleEl.textContent = `Cadastro da Pessoa ${slotIndex + 1} do ${ordem}º sábado`;
   saturdayPersonNameEl.value = detalheAtual?.nome || nomeSelecionado || "";
   saturdayPersonRoleEl.value = detalheAtual?.cargo || pessoaExistente?.cargo || "";
   saturdayPersonPhotoInputEl.value = "";
@@ -841,7 +841,7 @@ function renderSaturdayList() {
       <article class="member-item saturday-item">
         <img src="${config.foto}" alt="${config.nome}">
         <div>
-          <strong>${ordem}Âº sÃ¡bado - ${config.nome}</strong>
+          <strong>${ordem}º sábado - ${config.nome}</strong>
           <span>${config.atividade || "Sem atividade"}</span>
           <span>${membros}</span>
         </div>
@@ -946,14 +946,14 @@ function atualizarVisibilidadeAdmin() {
 function traduzirErroAuth(error) {
   const code = String(error?.code || "");
   const mensagens = {
-    "auth/invalid-credential": "E-mail ou senha invÃ¡lidos.",
+    "auth/invalid-credential": "E-mail ou senha inválidos.",
     "auth/wrong-password": "Senha incorreta.",
-    "auth/invalid-email": "Formato de e-mail invÃ¡lido.",
-    "auth/user-not-found": "UsuÃ¡rio nÃ£o encontrado.",
-    "auth/email-already-in-use": "Este e-mail jÃ¡ estÃ¡ em uso.",
-    "auth/weak-password": "A senha estÃ¡ fraca. Use uma senha mais forte.",
+    "auth/invalid-email": "Formato de e-mail inválido.",
+    "auth/user-not-found": "Usuário não encontrado.",
+    "auth/email-already-in-use": "Este e-mail já está em uso.",
+    "auth/weak-password": "A senha está fraca. Use uma senha mais forte.",
     "auth/operation-not-allowed": "Ative o provedor Email/Senha no Firebase Authentication.",
-    "auth/network-request-failed": "Falha de rede. Verifique a conexÃ£o e tente novamente.",
+    "auth/network-request-failed": "Falha de rede. Verifique a conexão e tente novamente.",
     "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos e tente novamente."
   };
   return mensagens[code] || "Não foi possível autenticar no Firebase.";
@@ -1027,7 +1027,7 @@ function checarAlerta17h() {
 
   localStorage.setItem(storageKey, "1");
   const { pessoa } = pessoaParaData(now);
-  showToast(`19:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
+  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
 }
 
 function atualizarPreviewArquivo(inputEl, previewEl) {
@@ -1208,7 +1208,7 @@ async function initFirebaseIfConfigured() {
     state.firebase = null;
     state.authUser = null;
     atualizarVisibilidadeAdmin();
-    setFirebaseStatus("nÃ£o configurado");
+    setFirebaseStatus("não configurado");
     preencherFirebaseForm(config);
     return;
   }
@@ -1264,7 +1264,7 @@ async function initFirebaseIfConfigured() {
     state.authUser = null;
     atualizarVisibilidadeAdmin();
     setFirebaseStatus("erro ao conectar");
-    showToast("NÃ£o foi possÃ­vel conectar ao Firebase.");
+    showToast("Não foi possível conectar ao Firebase.");
     loadLocalHiddenMemberNames();
     await loadCustomMembers();
   }
@@ -1308,7 +1308,7 @@ function subscribeRealtimeData() {
       renderCalendar();
     },
     (error) => {
-      console.error("Erro no listener de sÃ¡bados:", error);
+      console.error("Erro no listener de sábados:", error);
     }
   );
 
@@ -1342,7 +1342,7 @@ async function loadSaturdayConfigs() {
         return;
       }
     } catch (error) {
-      console.error("Erro ao carregar sÃ¡bados do Firebase:", error);
+      console.error("Erro ao carregar sábados do Firebase:", error);
     }
   }
 
@@ -1410,7 +1410,7 @@ function validarImagemParaBase64(file) {
 
   if (file.size > MAX_BASE64_IMAGE_SIZE_BYTES) {
     const limiteMb = (MAX_BASE64_IMAGE_SIZE_BYTES / (1024 * 1024)).toFixed(1);
-    throw new Error(`A imagem excede ${limiteMb} MB, que Ã© o limite seguro para salvar em base64 no Firestore.`);
+    throw new Error(`A imagem excede ${limiteMb} MB, que é o limite seguro para salvar em base64 no Firestore.`);
   }
 }
 
@@ -1643,7 +1643,7 @@ async function salvarSabado(event) {
     saturdayPreviewEl.classList.add("hidden");
     renderSaturdayMemberOptions();
     preencherFormularioSabadoSelecionado();
-    showToast("SÃ¡bado salvo com sucesso.");
+    showToast("Sábado salvo com sucesso.");
   } catch (error) {
     console.error("Erro ao salvar sábado:", error);
     showToast(error instanceof Error ? error.message : "Não foi possível salvar o sábado.");
@@ -1715,4 +1715,6 @@ function bootstrap() {
 }
 
 bootstrap();
+
+
 
