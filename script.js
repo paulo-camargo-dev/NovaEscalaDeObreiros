@@ -455,8 +455,8 @@ function updateDashboard() {
 
   todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programação";
   todaySubtitleEl.textContent = todayInfo.pessoa
-    ? `${todayInfo.pessoa.atividade || "Sem atividade"} • ${formatDate(today)}`
-    : formatDate(today);
+  ? `${todayInfo.pessoa.atividade || "Sem atividade"}`
+  : "Sem programação";
 
   nextSaturdayTitleEl.textContent = saturdayInfo.pessoa ? saturdayInfo.pessoa.nome : "Sem programação";
   nextSaturdaySubtitleEl.textContent = `${formatDate(nextSaturday)} • ${saturdayInfo.pessoa?.atividade || ""}`;
