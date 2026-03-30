@@ -1,4 +1,4 @@
-const DATA_BASE = new Date(2025, 0, 1);
+﻿const DATA_BASE = new Date(2025, 0, 1);
 const ALERTA_HORA = 17;
 const ALERTA_MINUTO = 0;
 const ALERTA_INTERVALO_MS = 30000;
@@ -6,9 +6,7 @@ const FIREBASE_CONFIG_STORAGE_KEY = "escala-firebase-config";
 const CUSTOM_MEMBER_STORAGE_KEY = "escala-custom-members";
 const SATURDAY_CONFIG_STORAGE_KEY = "escala-saturday-config";
 const HIDDEN_MEMBER_NAMES_STORAGE_KEY = "escala-hidden-member-names";
-const ADMIN_SESSION_STORAGE_KEY = "escala-admin-auth";
 const THEME_PALETTE_STORAGE_KEY = "escala-theme-palette";
-const ADMIN_PASSWORD = "G@by210715";
 const MAX_BASE64_IMAGE_SIZE_BYTES = 700 * 1024;
 const REQUIRED_SATURDAY_MEMBERS = 3;
 
@@ -59,50 +57,50 @@ const THEME_PALETTES = {
 
 const baseGrupo = [
   { nome: "Coop Paulo", cargo: "Cooperador", endereco: "Av: Fortunato Camargo 1075", contato: "(11) 91356-3576", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Cpaulo.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Reginaldo", cargo: "Diácono", endereco: "Rua F", contato: "(11) 96305-0243", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/reginaldo2.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Carlinhos", cargo: "Diácono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D João", cargo: "Diácono", endereco: "Rua D", contato: "(11) 98553-8590", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Djoao.jpg", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Reginaldo", cargo: "DiÃ¡cono", endereco: "Rua F", contato: "(11) 96305-0243", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/reginaldo2.PNG", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Carlinhos", cargo: "DiÃ¡cono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D JoÃ£o", cargo: "DiÃ¡cono", endereco: "Rua D", contato: "(11) 98553-8590", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Djoao.jpg", modoEscala: "sequencia", diaFixo: "" },
   { nome: "Coop Eliazer", cargo: "Cooperador", endereco: "Rua E", contato: "(11) 98255-3053", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/eliazer.jpg", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Paulo", cargo: "Diácono", endereco: "Rua B", contato: "(11) 94685-8301", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Dpaulo.jpg", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Paulo", cargo: "DiÃ¡cono", endereco: "Rua B", contato: "(11) 94685-8301", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Dpaulo.jpg", modoEscala: "sequencia", diaFixo: "" },
   { nome: "Coop Manuel", cargo: "Cooperador", endereco: "Rua G", contato: "(11) 98980-6608", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/manuel.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D zezinho", cargo: "Diácono", endereco: "Rua Curitiba", contato: "(11) 95083-4846", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/zezinho.PNG", modoEscala: "sequencia", diaFixo: "" }
+  { nome: "D zezinho", cargo: "DiÃ¡cono", endereco: "Rua Curitiba", contato: "(11) 95083-4846", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/zezinho.PNG", modoEscala: "sequencia", diaFixo: "" }
 ];
 
-const ensaio = { nome: "ENSAIO", atividade: "Anúncio de ensaio", foto: "img/ensaio.jpg" };
-const faesp = { nome: "FAESP", atividade: "Anúncio de FAESP", foto: "img/faesp.PNG" };
+const ensaio = { nome: "ENSAIO", atividade: "AnÃºncio de ensaio", foto: "img/ensaio.jpg" };
+const faesp = { nome: "FAESP", atividade: "AnÃºncio de FAESP", foto: "img/faesp.PNG" };
 
 const sabadosPadrao = [
   {
     ordem: 1,
     nome: "CULTO DOS JOVENS",
-    atividade: "Primeiro sábado do mês",
+    atividade: "Primeiro sÃ¡bado do mÃªs",
     foto: "img/jovens.png",
-    membros: ["D João", "Coop Eliazer", "D zezinho"]
+    membros: ["D JoÃ£o", "Coop Eliazer", "D zezinho"]
   },
   {
     ordem: 2,
     nome: "SANTA CEIA NA SEDE",
-    atividade: "Segundo sábado do mês",
+    atividade: "Segundo sÃ¡bado do mÃªs",
     foto: "img/adbelem.jpeg",
   },
   {
     ordem: 3,
-    nome: "CULTO DOS VARÕES",
-    atividade: "Terceiro sábado do mês",
+    nome: "CULTO DOS VARÃ•ES",
+    atividade: "Terceiro sÃ¡bado do mÃªs",
     foto: "img/varoes.jpeg",
     membros: ["D Carlinhos", "D Reginaldo"]
   },
   {
     ordem: 4,
     nome: "CULTO DOS ADOLESCENTES",
-    atividade: "Quarto sábado do mês",
+    atividade: "Quarto sÃ¡bado do mÃªs",
     foto: "img/adolecentes.png",
     membros: ["Coop Manuel", "D Paulo", "D Reginaldo"]
   },
   {
     ordem: 5,
     nome: "ESCALA A DEFINIR",
-    atividade: "Quinto sábado (quando houver)",
+    atividade: "Quinto sÃ¡bado (quando houver)",
     foto: "img/adbelem.jpeg",
     membros: []
   }
@@ -115,6 +113,8 @@ const state = {
   saturdayConfigs: sabadosPadrao.map((item) => ({ ...item })),
   firebaseReady: false,
   firebase: null,
+  authUser: null,
+  authUnsubscriber: null,
   firebaseUnsubscribers: []
 };
 let memberEditingContext = null;
@@ -170,7 +170,9 @@ const adminPanelEl = document.getElementById("adminPanel");
 const adminModalEl = document.getElementById("adminModal");
 const adminAccessBtn = document.getElementById("adminAccessBtn");
 const adminLoginFormEl = document.getElementById("adminLoginForm");
+const adminEmailInputEl = document.getElementById("adminEmailInput");
 const adminPasswordInputEl = document.getElementById("adminPasswordInput");
+const adminAuthMessageEl = document.getElementById("adminAuthMessage");
 const adminLogoutBtn = document.getElementById("adminLogoutBtn");
 const themeFormEl = document.getElementById("themeForm");
 const themePaletteSelectEl = document.getElementById("themePaletteSelect");
@@ -249,7 +251,7 @@ function getSaturdayConfig(ordem) {
 
 function getResponsavelPadraoSabado(ordem) {
   const defaults = {
-    1: "D João",
+    1: "D JoÃ£o",
     2: "Todos os obreiros",
     3: "D Carlinhos",
     4: "Coop Manuel",
@@ -385,8 +387,8 @@ function formatDate(date) {
 }
 
 function nomeDiaSemana(day) {
-  const nomes = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-  return nomes[day] || "Dia não definido";
+  const nomes = ["Domingo", "Segunda-feira", "TerÃ§a-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "SÃ¡bado"];
+  return nomes[day] || "Dia nÃ£o definido";
 }
 
 function renderCalendar() {
@@ -401,7 +403,7 @@ function renderCalendar() {
     month: "long",
     year: "numeric"
   });
-  monthNoticeEl.textContent = "Aviso geral: nos dias de escala o responsável permanece com a atividade de abrir e fechar a igreja.";
+  monthNoticeEl.textContent = "Aviso geral: nos dias de escala o responsÃ¡vel permanece com a atividade de abrir e fechar a igreja.";
 
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
@@ -426,7 +428,7 @@ function renderCalendar() {
     if (pessoa) {
       const responsavelHtml = "";
       const membrosHtml = Array.isArray(pessoa.membros) && pessoa.membros.length
-        ? `<div class="group-members group-members-sabado"><span>Todos os obreiros estão escalados</span></div>`
+        ? `<div class="group-members group-members-sabado"><span>Todos os obreiros estÃ£o escalados</span></div>`
         : Array.isArray(pessoa.membros) && pessoa.membros.length
         ? `
           <div class="group-members ${tipo === "sabado" ? "group-members-sabado" : ""}">
@@ -511,13 +513,13 @@ function updateDashboard() {
   const todayInfo = pessoaParaData(today);
   const saturdayInfo = pessoaParaData(nextSaturday);
 
-  todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programação";
+  todayTitleEl.textContent = todayInfo.pessoa ? todayInfo.pessoa.nome : "Sem programaÃ§Ã£o";
  todaySubtitleEl.textContent = todayInfo.pessoa
   ? `${todayInfo.pessoa.atividade || "Sem atividade"}`
-  : "Sem programação";
+  : "Sem programaÃ§Ã£o";
 
-  nextSaturdayTitleEl.textContent = saturdayInfo.pessoa ? saturdayInfo.pessoa.nome : "Sem programação";
-  nextSaturdaySubtitleEl.textContent = `${formatDate(nextSaturday)} • ${saturdayInfo.pessoa?.atividade || ""}`;
+  nextSaturdayTitleEl.textContent = saturdayInfo.pessoa ? saturdayInfo.pessoa.nome : "Sem programaÃ§Ã£o";
+  nextSaturdaySubtitleEl.textContent = `${formatDate(nextSaturday)} â€¢ ${saturdayInfo.pessoa?.atividade || ""}`;
   memberCountEl.textContent = String(getGrupoCompleto().length);
 
   renderUpcomingList();
@@ -572,15 +574,15 @@ async function handleMemberListClick(event) {
 
   if (!memberName) return;
 
-  const confirmed = window.confirm(`Excluir ${memberName} da escala e dos sábados especiais?`);
+  const confirmed = window.confirm(`Excluir ${memberName} da escala e dos sÃ¡bados especiais?`);
   if (!confirmed) return;
 
   try {
     await excluirIntegrante(memberName, memberId);
-    showToast("Integrante excluído com sucesso.");
+    showToast("Integrante excluÃ­do com sucesso.");
   } catch (error) {
     console.error("Erro ao excluir integrante:", error);
-    showToast(error instanceof Error ? error.message : "Não foi possível excluir o integrante.");
+    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel excluir o integrante.");
   }
 }
 
@@ -595,7 +597,7 @@ function renderMemberList() {
         <strong>${index + 1}. ${pessoa.nome}</strong>
         <span>${pessoa.cargo || "Sem cargo"}</span>
         <span>${pessoa.modoEscala === "fixo" ? `Dia fixo: ${nomeDiaSemana(Number(pessoa.diaFixo))}` : "Escala sequencial"}</span>
-        <span>${pessoa.contato || "Contato não informado"}</span>
+        <span>${pessoa.contato || "Contato nÃ£o informado"}</span>
       </div>
       <div class="member-actions">
         <button
@@ -671,7 +673,7 @@ function preencherFormularioIntegrante(integrante) {
 
 function atualizarEstadoEdicaoIntegrante() {
   const isEditing = Boolean(memberEditingContext);
-  saveMemberBtnEl.textContent = isEditing ? "Salvar alterações" : "Salvar integrante";
+  saveMemberBtnEl.textContent = isEditing ? "Salvar alteraÃ§Ãµes" : "Salvar integrante";
   cancelMemberEditBtnEl.classList.toggle("hidden", !isEditing);
 }
 
@@ -687,7 +689,7 @@ function resetMemberForm() {
 function iniciarEdicaoIntegrante(context) {
   const integrante = getIntegranteByContext(context);
   if (!integrante) {
-    showToast("Não foi possível abrir este integrante para edição.");
+    showToast("NÃ£o foi possÃ­vel abrir este integrante para ediÃ§Ã£o.");
     return;
   }
 
@@ -707,7 +709,7 @@ function limparEdicaoIntegrante({ limparFormulario = true } = {}) {
 
 function cancelarEdicaoIntegrante() {
   limparEdicaoIntegrante({ limparFormulario: true });
-  showToast("Edição cancelada.");
+  showToast("EdiÃ§Ã£o cancelada.");
 }
 
 function renderSaturdayMemberOptions() {
@@ -760,7 +762,7 @@ function abrirModalCadastroPessoaSabado(slotIndex) {
   const pessoaExistente = findPessoaByNome(nomeSelecionado);
 
   saturdayPersonEditingSlotIndex = slotIndex;
-  saturdayPersonModalTitleEl.textContent = `Cadastro da Pessoa ${slotIndex + 1} do ${ordem}º sábado`;
+  saturdayPersonModalTitleEl.textContent = `Cadastro da Pessoa ${slotIndex + 1} do ${ordem}Âº sÃ¡bado`;
   saturdayPersonNameEl.value = detalheAtual?.nome || nomeSelecionado || "";
   saturdayPersonRoleEl.value = detalheAtual?.cargo || pessoaExistente?.cargo || "";
   saturdayPersonPhotoInputEl.value = "";
@@ -789,7 +791,7 @@ async function salvarPessoaNoSabadoSelecionado(event) {
   const file = saturdayPersonPhotoInputEl.files?.[0] || null;
 
   if (!nome || !cargo) {
-    showToast("Preencha nome e cargo da pessoa do sábado.");
+    showToast("Preencha nome e cargo da pessoa do sÃ¡bado.");
     return;
   }
 
@@ -822,10 +824,10 @@ async function salvarPessoaNoSabadoSelecionado(event) {
     renderSaturdayMemberOptions();
     preencherFormularioSabadoSelecionado();
     fecharModalCadastroPessoaSabado();
-    showToast(`Pessoa ${saturdayPersonEditingSlotIndex + 1} atualizada no sábado selecionado.`);
+    showToast(`Pessoa ${saturdayPersonEditingSlotIndex + 1} atualizada no sÃ¡bado selecionado.`);
   } catch (error) {
-    console.error("Erro ao salvar pessoa do sábado:", error);
-    showToast(error instanceof Error ? error.message : "Não foi possível salvar a pessoa do sábado.");
+    console.error("Erro ao salvar pessoa do sÃ¡bado:", error);
+    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar a pessoa do sÃ¡bado.");
   }
 }
 
@@ -839,7 +841,7 @@ function renderSaturdayList() {
       <article class="member-item saturday-item">
         <img src="${config.foto}" alt="${config.nome}">
         <div>
-          <strong>${ordem}º sábado - ${config.nome}</strong>
+          <strong>${ordem}Âº sÃ¡bado - ${config.nome}</strong>
           <span>${config.atividade || "Sem atividade"}</span>
           <span>${membros}</span>
         </div>
@@ -862,15 +864,15 @@ async function handleSaturdayListClick(event) {
   const ordem = Number(button.dataset.ordem);
   if (!ordem) return;
 
-  const confirmed = window.confirm(`Excluir o cadastro do ${ordem}º sábado e voltar ao padrão original?`);
+  const confirmed = window.confirm(`Excluir o cadastro do ${ordem}Âº sÃ¡bado e voltar ao padrÃ£o original?`);
   if (!confirmed) return;
 
   try {
     await excluirCadastroSabado(ordem);
-    showToast("Cadastro do sábado excluído com sucesso.");
+    showToast("Cadastro do sÃ¡bado excluÃ­do com sucesso.");
   } catch (error) {
-    console.error("Erro ao excluir sábado:", error);
-    showToast(error instanceof Error ? error.message : "Não foi possível excluir o cadastro do sábado.");
+    console.error("Erro ao excluir sÃ¡bado:", error);
+    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel excluir o cadastro do sÃ¡bado.");
   }
 }
 
@@ -901,7 +903,7 @@ function abrirModal(pessoa, isSabado) {
 
   modalNomeEl.textContent = pessoa.nome || "";
   modalCargoEl.textContent = isSabado
-    ? "Cadastro específico de 3 pessoas para o sábado"
+    ? "Cadastro especÃ­fico de 3 pessoas para o sÃ¡bado"
     : pessoa.cargo || "";
   modalEnderecoEl.textContent = pessoa.endereco || "";
   modalContatoEl.textContent = pessoa.contato || "";
@@ -916,7 +918,7 @@ function fecharModal() {
 function abrirAdminModal() {
   adminModalEl.classList.add("show");
   adminModalEl.setAttribute("aria-hidden", "false");
-  adminPasswordInputEl.focus();
+  adminEmailInputEl.focus();
 }
 
 function fecharAdminModal() {
@@ -925,37 +927,88 @@ function fecharAdminModal() {
 }
 
 function isAdminAutenticado() {
-  return localStorage.getItem(ADMIN_SESSION_STORAGE_KEY) === "1";
+  return Boolean(state.authUser);
 }
 
 function atualizarVisibilidadeAdmin() {
   const autenticado = isAdminAutenticado();
   adminPanelEl.classList.toggle("hidden", !autenticado);
   adminLogoutBtn.classList.toggle("hidden", !autenticado);
-  adminAccessBtn.textContent = autenticado ? "Painel do administrador" : "Área do administrador";
+  adminAccessBtn.textContent = autenticado ? "Painel do administrador" : "Ãrea do administrador";
+  if (autenticado && state.authUser?.email) {
+    adminAuthMessageEl.textContent = `Conectado como ${state.authUser.email}.`;
+  } else {
+    adminAuthMessageEl.textContent = "Somente contas de administrador ja cadastradas no Firebase podem entrar.";
+  }
 }
 
-function validarLoginAdmin(event) {
-  event.preventDefault();
+
+function traduzirErroAuth(error) {
+  const code = String(error?.code || "");
+  const mensagens = {
+    "auth/invalid-credential": "E-mail ou senha invÃ¡lidos.",
+    "auth/wrong-password": "Senha incorreta.",
+    "auth/invalid-email": "Formato de e-mail invÃ¡lido.",
+    "auth/user-not-found": "UsuÃ¡rio nÃ£o encontrado.",
+    "auth/email-already-in-use": "Este e-mail jÃ¡ estÃ¡ em uso.",
+    "auth/weak-password": "A senha estÃ¡ fraca. Use uma senha mais forte.",
+    "auth/operation-not-allowed": "Ative o provedor Email/Senha no Firebase Authentication.",
+    "auth/network-request-failed": "Falha de rede. Verifique a conexÃ£o e tente novamente.",
+    "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos e tente novamente."
+  };
+  return mensagens[code] || "NÃ£o foi possÃ­vel autenticar no Firebase.";
+}
+
+function validarCamposLoginAdmin() {
+  if (!state.firebaseReady || !state.firebase?.auth) {
+    showToast("Configure o Firebase para autenticar o administrador.");
+    return null;
+  }
+
+  const email = adminEmailInputEl.value.trim().toLowerCase();
   const senha = adminPasswordInputEl.value.trim();
 
-  if (senha !== ADMIN_PASSWORD) {
-    showToast("Senha do administrador inválida.");
+  if (!email || !senha) {
+    showToast("Preencha e-mail e senha do administrador.");
+    return null;
+  }
+
+  return { email, senha };
+}
+
+async function validarLoginAdmin(event) {
+  event.preventDefault();
+  const campos = validarCamposLoginAdmin();
+  if (!campos) return;
+
+  try {
+    await state.firebase.signInWithEmailAndPassword(state.firebase.auth, campos.email, campos.senha);
+    adminLoginFormEl.reset();
+    fecharAdminModal();
+    showToast("Modo administrador liberado.");
+  } catch (error) {
+    console.error("Erro ao fazer login do administrador:", error);
+    showToast(traduzirErroAuth(error));
+  }
+}
+
+
+async function sairModoAdmin() {
+  if (!state.firebaseReady || !state.firebase?.auth) {
+    state.authUser = null;
+    atualizarVisibilidadeAdmin();
+    fecharAdminModal();
     return;
   }
 
-  localStorage.setItem(ADMIN_SESSION_STORAGE_KEY, "1");
-  atualizarVisibilidadeAdmin();
-  adminLoginFormEl.reset();
-  fecharAdminModal();
-  showToast("Modo administrador liberado.");
-}
-
-function sairModoAdmin() {
-  localStorage.removeItem(ADMIN_SESSION_STORAGE_KEY);
-  atualizarVisibilidadeAdmin();
-  fecharAdminModal();
-  showToast("Modo administrador encerrado.");
+  try {
+    await state.firebase.signOut(state.firebase.auth);
+    fecharAdminModal();
+    showToast("Modo administrador encerrado.");
+  } catch (error) {
+    console.error("Erro ao encerrar sessÃ£o do administrador:", error);
+    showToast("NÃ£o foi possÃ­vel encerrar a sessÃ£o agora.");
+  }
 }
 
 function showToast(message) {
@@ -974,7 +1027,7 @@ function checarAlerta17h() {
 
   localStorage.setItem(storageKey, "1");
   const { pessoa } = pessoaParaData(now);
-  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programação"}`);
+  showToast(`17:00 - Hoje: ${pessoa?.nome || "Sem programaÃ§Ã£o"}`);
 }
 
 function atualizarPreviewArquivo(inputEl, previewEl) {
@@ -1030,7 +1083,7 @@ function getEffectiveFirebaseConfig() {
   return { config: localConfig || sharedConfig || null, source: "none" };
 }
 
-function clearFirebaseSubscriptions() {
+function clearFirebaseSubscriptions(includeAuth = true) {
   state.firebaseUnsubscribers.forEach((unsubscribe) => {
     try {
       unsubscribe();
@@ -1039,6 +1092,17 @@ function clearFirebaseSubscriptions() {
     }
   });
   state.firebaseUnsubscribers = [];
+
+  if (!includeAuth) return;
+
+  if (typeof state.authUnsubscriber === "function") {
+    try {
+      state.authUnsubscriber();
+    } catch (error) {
+      console.warn("Erro ao remover listener de autenticaÃ§Ã£o:", error);
+    }
+  }
+  state.authUnsubscriber = null;
 }
 
 function getSavedSaturdayConfigs() {
@@ -1140,7 +1204,11 @@ async function initFirebaseIfConfigured() {
 
   if (!isFirebaseConfigValid(config)) {
     clearFirebaseSubscriptions();
-    setFirebaseStatus("não configurado");
+    state.firebaseReady = false;
+    state.firebase = null;
+    state.authUser = null;
+    atualizarVisibilidadeAdmin();
+    setFirebaseStatus("nÃ£o configurado");
     preencherFirebaseForm(config);
     return;
   }
@@ -1149,15 +1217,18 @@ async function initFirebaseIfConfigured() {
   clearFirebaseSubscriptions();
 
   try {
-    const [appModule, firestoreModule] = await Promise.all([
+    const [appModule, firestoreModule, authModule] = await Promise.all([
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js")
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js")
     ]);
 
-    const app = appModule.initializeApp(config);
+    const app = appModule.getApps().length ? appModule.getApp() : appModule.initializeApp(config);
     const db = firestoreModule.getFirestore(app);
+    const auth = authModule.getAuth(app);
 
     state.firebase = {
+      auth,
       db,
       addDoc: firestoreModule.addDoc,
       collection: firestoreModule.collection,
@@ -1169,10 +1240,19 @@ async function initFirebaseIfConfigured() {
       orderBy: firestoreModule.orderBy,
       query: firestoreModule.query,
       serverTimestamp: firestoreModule.serverTimestamp,
-      setDoc: firestoreModule.setDoc
+      setDoc: firestoreModule.setDoc,
+      signInWithEmailAndPassword: authModule.signInWithEmailAndPassword,
+      signOut: authModule.signOut
     };
+
+    const unsubscribeAuth = authModule.onAuthStateChanged(auth, (user) => {
+      state.authUser = user || null;
+      atualizarVisibilidadeAdmin();
+    });
+    state.authUnsubscriber = unsubscribeAuth;
+
     state.firebaseReady = true;
-    setFirebaseStatus(source === "shared" ? "conectado (config compartilhada)" : "conectado", true);
+    setFirebaseStatus(source === "shared" ? "conectado (config compartilhada + auth)" : "conectado (auth ativo)", true);
     await loadHiddenMemberNames();
     await loadCustomMembers();
     subscribeRealtimeData();
@@ -1181,8 +1261,10 @@ async function initFirebaseIfConfigured() {
     clearFirebaseSubscriptions();
     state.firebaseReady = false;
     state.firebase = null;
+    state.authUser = null;
+    atualizarVisibilidadeAdmin();
     setFirebaseStatus("erro ao conectar");
-    showToast("Não foi possível conectar ao Firebase.");
+    showToast("NÃ£o foi possÃ­vel conectar ao Firebase.");
     loadLocalHiddenMemberNames();
     await loadCustomMembers();
   }
@@ -1191,7 +1273,7 @@ async function initFirebaseIfConfigured() {
 function subscribeRealtimeData() {
   if (!state.firebaseReady || !state.firebase) return;
 
-  clearFirebaseSubscriptions();
+  clearFirebaseSubscriptions(false);
 
   const membersRef = state.firebase.collection(state.firebase.db, "integrantes");
   const membersQuery = state.firebase.query(membersRef, state.firebase.orderBy("createdAt", "asc"));
@@ -1226,7 +1308,7 @@ function subscribeRealtimeData() {
       renderCalendar();
     },
     (error) => {
-      console.error("Erro no listener de sábados:", error);
+      console.error("Erro no listener de sÃ¡bados:", error);
     }
   );
 
@@ -1260,7 +1342,7 @@ async function loadSaturdayConfigs() {
         return;
       }
     } catch (error) {
-      console.error("Erro ao carregar sábados do Firebase:", error);
+      console.error("Erro ao carregar sÃ¡bados do Firebase:", error);
     }
   }
 
@@ -1328,7 +1410,7 @@ function validarImagemParaBase64(file) {
 
   if (file.size > MAX_BASE64_IMAGE_SIZE_BYTES) {
     const limiteMb = (MAX_BASE64_IMAGE_SIZE_BYTES / (1024 * 1024)).toFixed(1);
-    throw new Error(`A imagem excede ${limiteMb} MB, que é o limite seguro para salvar em base64 no Firestore.`);
+    throw new Error(`A imagem excede ${limiteMb} MB, que Ã© o limite seguro para salvar em base64 no Firestore.`);
   }
 }
 
@@ -1366,7 +1448,7 @@ async function salvarIntegrante(event) {
     showToast(integranteAtual ? "Integrante atualizado com sucesso." : "Integrante salvo com sucesso.");
   } catch (error) {
     console.error("Erro ao salvar integrante:", error);
-    showToast(error instanceof Error ? error.message : "Não foi possível salvar o integrante.");
+    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar o integrante.");
   }
 }
 
@@ -1374,7 +1456,7 @@ async function saveMemberRecord(member, editingContext = null, currentMember = n
   if (editingContext && editingContext.source === "base") {
     const baseIndex = Number(editingContext.baseIndex);
     if (!Number.isInteger(baseIndex) || !baseGrupo[baseIndex]) {
-      throw new Error("Integrante base não encontrado para edição.");
+      throw new Error("Integrante base nÃ£o encontrado para ediÃ§Ã£o.");
     }
 
     baseGrupo[baseIndex] = {
@@ -1543,7 +1625,7 @@ async function salvarSabado(event) {
   };
 
   if (!config.nome || !config.atividade) {
-    showToast("Preencha o nome e a atividade do sábado.");
+    showToast("Preencha o nome e a atividade do sÃ¡bado.");
     return;
   }
 
@@ -1561,10 +1643,10 @@ async function salvarSabado(event) {
     saturdayPreviewEl.classList.add("hidden");
     renderSaturdayMemberOptions();
     preencherFormularioSabadoSelecionado();
-    showToast("Sábado salvo com sucesso.");
+    showToast("SÃ¡bado salvo com sucesso.");
   } catch (error) {
-    console.error("Erro ao salvar sábado:", error);
-    showToast(error instanceof Error ? error.message : "Não foi possível salvar o sábado.");
+    console.error("Erro ao salvar sÃ¡bado:", error);
+    showToast(error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar o sÃ¡bado.");
   }
 }
 
@@ -1600,7 +1682,7 @@ async function salvarFirebaseConfig(event) {
   };
 
   localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(config));
-  showToast("Configuração do Firebase salva.");
+  showToast("ConfiguraÃ§Ã£o do Firebase salva.");
   state.firebaseReady = false;
   state.firebase = null;
   await initFirebaseIfConfigured();
@@ -1611,10 +1693,12 @@ function limparFirebaseConfig() {
   clearFirebaseSubscriptions();
   state.firebaseReady = false;
   state.firebase = null;
+  state.authUser = null;
+  atualizarVisibilidadeAdmin();
   firebaseFormEl.reset();
-  setFirebaseStatus("não configurado");
+  setFirebaseStatus("nÃ£o configurado");
   loadCustomMembers();
-  showToast("Configuração do Firebase removida.");
+  showToast("ConfiguraÃ§Ã£o do Firebase removida.");
 }
 
 function bootstrap() {
@@ -1631,3 +1715,4 @@ function bootstrap() {
 }
 
 bootstrap();
+

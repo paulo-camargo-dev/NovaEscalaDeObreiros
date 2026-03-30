@@ -300,9 +300,16 @@
         <p>Somente o administrador visualiza o cadastro de integrantes e a configuração do Firebase.</p>
         <form id="adminLoginForm" class="member-form">
           <label>
-            Senha do administrador
-            <input id="adminPasswordInput" name="adminPassword" type="password" placeholder="Digite a senha" required />
+            E-mail do administrador
+            <input id="adminEmailInput" name="adminEmail" type="email" placeholder="admin@exemplo.com" autocomplete="email" required />
           </label>
+          <label>
+            Senha do administrador
+            <input id="adminPasswordInput" name="adminPassword" type="password" placeholder="Digite a senha" autocomplete="current-password" required />
+          </label>
+          <p id="adminAuthMessage" class="admin-auth-message">
+            Somente contas de administrador já cadastradas no Firebase podem entrar.
+          </p>
           <button class="primary-btn" type="submit">Entrar</button>
           <button id="adminLogoutBtn" class="ghost-btn hidden" type="button">Sair do modo admin</button>
         </form>
