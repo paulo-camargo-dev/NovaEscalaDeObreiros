@@ -114,7 +114,8 @@ const state = {
   hiddenMemberNames: [],
   saturdayConfigs: sabadosPadrao.map((item) => ({ ...item })),
   firebaseReady: false,
-  firebase: null
+  firebase: null,
+  firebaseUnsubscribers: []
 };
 let memberEditingContext = null;
 let saturdayPersonEditingSlotIndex = null;
@@ -1004,6 +1005,42 @@ function getSavedFirebaseConfig() {
   }
 }
 
+function getSharedFirebaseConfig() {
+  if (typeof window === "undefined") return null;
+  const config = window.FIREBASE_CONFIG;
+  if (!config || typeof config !== "object") return null;
+  return config;
+}
+
+function isFirebaseConfigValid(config) {
+  return Boolean(config?.apiKey && config?.projectId && config?.appId);
+}
+
+function getEffectiveFirebaseConfig() {
+  const sharedConfig = getSharedFirebaseConfig();
+  if (isFirebaseConfigValid(sharedConfig)) {
+    return { config: sharedConfig, source: "shared" };
+  }
+
+  const localConfig = getSavedFirebaseConfig();
+  if (isFirebaseConfigValid(localConfig)) {
+    return { config: localConfig, source: "local" };
+  }
+
+  return { config: localConfig || sharedConfig || null, source: "none" };
+}
+
+function clearFirebaseSubscriptions() {
+  state.firebaseUnsubscribers.forEach((unsubscribe) => {
+    try {
+      unsubscribe();
+    } catch (error) {
+      console.warn("Erro ao remover listener do Firebase:", error);
+    }
+  });
+  state.firebaseUnsubscribers = [];
+}
+
 function getSavedSaturdayConfigs() {
   try {
     return JSON.parse(localStorage.getItem(SATURDAY_CONFIG_STORAGE_KEY) || "null");
@@ -1099,15 +1136,17 @@ function normalizarIntegrante(raw) {
 }
 
 async function initFirebaseIfConfigured() {
-  const config = getSavedFirebaseConfig();
+  const { config, source } = getEffectiveFirebaseConfig();
 
-  if (!config?.apiKey || !config?.projectId || !config?.appId) {
+  if (!isFirebaseConfigValid(config)) {
+    clearFirebaseSubscriptions();
     setFirebaseStatus("não configurado");
     preencherFirebaseForm(config);
     return;
   }
 
   preencherFirebaseForm(config);
+  clearFirebaseSubscriptions();
 
   try {
     const [appModule, firestoreModule] = await Promise.all([
@@ -1126,23 +1165,87 @@ async function initFirebaseIfConfigured() {
       doc: firestoreModule.doc,
       getDoc: firestoreModule.getDoc,
       getDocs: firestoreModule.getDocs,
+      onSnapshot: firestoreModule.onSnapshot,
       orderBy: firestoreModule.orderBy,
       query: firestoreModule.query,
       serverTimestamp: firestoreModule.serverTimestamp,
       setDoc: firestoreModule.setDoc
     };
     state.firebaseReady = true;
-    setFirebaseStatus("conectado", true);
+    setFirebaseStatus(source === "shared" ? "conectado (config compartilhada)" : "conectado", true);
     await loadHiddenMemberNames();
     await loadCustomMembers();
+    subscribeRealtimeData();
   } catch (error) {
     console.error("Erro ao iniciar Firebase:", error);
+    clearFirebaseSubscriptions();
     state.firebaseReady = false;
+    state.firebase = null;
     setFirebaseStatus("erro ao conectar");
     showToast("Não foi possível conectar ao Firebase.");
     loadLocalHiddenMemberNames();
     await loadCustomMembers();
   }
+}
+
+function subscribeRealtimeData() {
+  if (!state.firebaseReady || !state.firebase) return;
+
+  clearFirebaseSubscriptions();
+
+  const membersRef = state.firebase.collection(state.firebase.db, "integrantes");
+  const membersQuery = state.firebase.query(membersRef, state.firebase.orderBy("createdAt", "asc"));
+  const unsubscribeMembers = state.firebase.onSnapshot(
+    membersQuery,
+    (snapshot) => {
+      state.customMembers = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: typeof data.createdAt?.toMillis === "function" ? data.createdAt.toMillis() : data.createdAt || Date.now()
+        };
+      });
+      persistLocalMembers(state.customMembers);
+      renderCalendar();
+    },
+    (error) => {
+      console.error("Erro no listener de integrantes:", error);
+    }
+  );
+
+  const saturdayRef = state.firebase.collection(state.firebase.db, "sabados");
+  const saturdayQuery = state.firebase.query(saturdayRef, state.firebase.orderBy("ordem", "asc"));
+  const unsubscribeSaturdays = state.firebase.onSnapshot(
+    saturdayQuery,
+    (snapshot) => {
+      if (!snapshot.docs.length) return;
+      state.saturdayConfigs = snapshot.docs.map((doc) => normalizarSabadoConfig({ id: doc.id, ...doc.data() }));
+      persistSaturdayConfigs(state.saturdayConfigs);
+      preencherFormularioSabadoSelecionado();
+      renderCalendar();
+    },
+    (error) => {
+      console.error("Erro no listener de sábados:", error);
+    }
+  );
+
+  const hiddenRef = state.firebase.doc(state.firebase.db, "configuracoes", "integrantesOcultos");
+  const unsubscribeHidden = state.firebase.onSnapshot(
+    hiddenRef,
+    (snapshot) => {
+      state.hiddenMemberNames = snapshot.exists() && Array.isArray(snapshot.data().nomes)
+        ? snapshot.data().nomes
+        : [];
+      persistHiddenMemberNames(state.hiddenMemberNames);
+      renderCalendar();
+    },
+    (error) => {
+      console.error("Erro no listener de integrantes ocultos:", error);
+    }
+  );
+
+  state.firebaseUnsubscribers = [unsubscribeMembers, unsubscribeSaturdays, unsubscribeHidden];
 }
 
 async function loadSaturdayConfigs() {
@@ -1505,6 +1608,7 @@ async function salvarFirebaseConfig(event) {
 
 function limparFirebaseConfig() {
   localStorage.removeItem(FIREBASE_CONFIG_STORAGE_KEY);
+  clearFirebaseSubscriptions();
   state.firebaseReady = false;
   state.firebase = null;
   firebaseFormEl.reset();
