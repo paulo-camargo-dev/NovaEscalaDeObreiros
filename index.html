@@ -14,10 +14,10 @@
     <header class="hero">
       <div class="hero-copy">
         <span class="eyebrow">Escala inteligente</span>
-        <h1>Escala de Obreiros</h1>
+        <h1><span id="heroTitleText" class="hero-title-text hero-title-original">Escala de Obreiros</span></h1>
         <p>
-          Um calendário renovado, mais agradável e com cadastro de novos integrantes,
-          preservando a lógica de rotação já usada pela igreja.
+          1 Coríntios 15:58, que diz:
+           "Portanto, meus amados irmãos, sede firmes e constantes, sempre abundantes na obra do Senhor, sabendo que o vosso trabalho não é vão no Senhor"
         </p>
         <div class="hero-actions">
           <button id="adminAccessBtn" class="ghost-btn" type="button">Área do administrador</button>
@@ -98,7 +98,18 @@
       </section>
 
       <aside id="adminPanel" class="sidebar admin-panel hidden">
-        <section class="card info-card">
+        <div class="admin-panel-header">
+          <button id="adminMenuButton" class="hamburger-btn" type="button" aria-expanded="false" aria-controls="adminMenu">
+            ☰ Menu
+          </button>
+          <div id="adminMenu" class="admin-menu hidden" role="menu" aria-label="Menu administrativo">
+            <button class="admin-menu-item" type="button" data-section="memberSection">Cadastro</button>
+            <button class="admin-menu-item" type="button" data-section="saturdaySection">Sábados</button>
+            <button class="admin-menu-item" type="button" data-section="themeSection">Visual</button>
+            <button class="admin-menu-item" type="button" data-section="listaSection">Integrantes</button>
+          </div>
+        </div>
+        <section id="memberSection" class="card info-card admin-section hidden">
           <div class="section-head compact">
             <div>
               
@@ -178,7 +189,7 @@
           </form>
         </section>
 
-        <section class="card info-card">
+        <section id="saturdaySection" class="card info-card admin-section hidden">
           <div class="section-head compact">
             <div>
               <span class="section-kicker">Sábados</span>
@@ -231,7 +242,7 @@
           <div id="saturdayList" class="member-list"></div>
         </section>
 
-        <section class="card info-card">
+        <section id="themeSection" class="card info-card admin-section hidden">
           <div class="section-head compact">
             <div>
               <span class="section-kicker">Visual</span>
@@ -255,7 +266,7 @@
           </form>
         </section>
 
-        <section class="card info-card">
+        <section id="listaSection" class="card info-card admin-section hidden">
           <div class="section-head compact">
             <div>
               <span class="section-kicker">Integrantes</span>

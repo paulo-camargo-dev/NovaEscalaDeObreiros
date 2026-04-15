@@ -125,6 +125,43 @@ select {
   letter-spacing: -0.03em;
 }
 
+.hero-title-text {
+  display: inline-block;
+  transition: color 400ms ease, transform 400ms ease, text-shadow 400ms ease, opacity 400ms ease;
+}
+
+.hero-title-original {
+  color: var(--text);
+  text-shadow: none;
+}
+
+.hero-title-alternate {
+  color: transparent;
+  background: linear-gradient(90deg, #0f4c81, #177a8d, #27557a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 22px rgba(23, 122, 141, 0.28);
+}
+
+.hero-title-flash {
+  animation: heroTitlePulse 0.55s ease;
+}
+
+@keyframes heroTitlePulse {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .hero h1 {
   font-size: clamp(2rem, 4vw, 3.8rem);
   line-height: 1.02;
@@ -492,8 +529,64 @@ select {
   gap: 22px;
 }
 
-.admin-panel.hidden {
-  display: none;
+.admin-panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.hamburger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 12px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(108, 72, 36, 0.14);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-menu {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.admin-menu-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(108, 72, 36, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-menu-item:hover,
+.admin-menu-item:focus {
+  box-shadow: 0 12px 22px rgba(178, 95, 46, 0.12);
+  transform: translateY(-1px);
+}
+
+.admin-section {
+  animation: fadeIn 200ms ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .admin-modal-content {

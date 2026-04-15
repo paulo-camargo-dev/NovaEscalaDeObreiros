@@ -122,6 +122,7 @@ let saturdayPersonEditingSlotIndex = null;
 
 const calendarEl = document.getElementById("calendar");
 const monthYearEl = document.getElementById("monthYear");
+const heroTitleTextEl = document.getElementById("heroTitleText");
 const toastEl = document.getElementById("toast");
 const modalEl = document.getElementById("modal");
 const modalFotosEl = document.getElementById("modalFotos");
@@ -169,6 +170,10 @@ const monthNoticeEl = document.getElementById("monthNotice");
 const adminPanelEl = document.getElementById("adminPanel");
 const adminModalEl = document.getElementById("adminModal");
 const adminAccessBtn = document.getElementById("adminAccessBtn");
+const adminMenuButton = document.getElementById("adminMenuButton");
+const adminMenuEl = document.getElementById("adminMenu");
+const adminMenuItemEls = Array.from(document.querySelectorAll(".admin-menu-item"));
+const adminSectionEls = Array.from(document.querySelectorAll(".admin-section"));
 const adminLoginFormEl = document.getElementById("adminLoginForm");
 const adminEmailInputEl = document.getElementById("adminEmailInput");
 const adminPasswordInputEl = document.getElementById("adminPasswordInput");
@@ -199,6 +204,10 @@ document.getElementById("closeSaturdayPersonModal").addEventListener("click", fe
 memberListEl.addEventListener("click", handleMemberListClick);
 saturdayListEl.addEventListener("click", handleSaturdayListClick);
 adminAccessBtn.addEventListener("click", abrirAdminModal);
+adminMenuButton.addEventListener("click", toggleAdminMenu);
+adminMenuItemEls.forEach((button) => {
+  button.addEventListener("click", () => abrirSecaoAdmin(button.dataset.section));
+});
 document.getElementById("closeAdminModal").addEventListener("click", fecharAdminModal);
 adminLoginFormEl.addEventListener("submit", validarLoginAdmin);
 adminLogoutBtn.addEventListener("click", sairModoAdmin);
@@ -219,6 +228,24 @@ document.addEventListener("keydown", (event) => {
     fecharModalCadastroPessoaSabado();
   }
 });
+
+const heroTitleMessages = [
+  { text: "Escala de Obreiros", className: "hero-title-original" },
+  { text: "❤️ Porque o vosso trabalho não é vão no Senhor ❤️", className: "hero-title-alternate" }
+];
+let heroTitleIndex = 0;
+
+function atualizarHeroTitle() {
+  heroTitleIndex = (heroTitleIndex + 1) % heroTitleMessages.length;
+  const nextTitle = heroTitleMessages[heroTitleIndex];
+  heroTitleTextEl.textContent = nextTitle.text;
+  heroTitleTextEl.className = `hero-title-text ${nextTitle.className}`;
+  heroTitleTextEl.classList.remove("hero-title-flash");
+  void heroTitleTextEl.offsetWidth;
+  heroTitleTextEl.classList.add("hero-title-flash");
+}
+
+setInterval(atualizarHeroTitle, 5000);
 
 function getGrupoCompleto() {
   return getGrupoComOrigem().map((item) => item.pessoa);
@@ -1009,6 +1036,26 @@ async function sairModoAdmin() {
     console.error("Erro ao encerrar sessão do administrador:", error);
     showToast("Não foi possível encerrar a sessão agora.");
   }
+}
+
+function toggleAdminMenu() {
+  const isHidden = adminMenuEl.classList.toggle("hidden");
+  adminMenuButton.setAttribute("aria-expanded", String(!isHidden));
+}
+
+function abrirSecaoAdmin(sectionId) {
+  const section = adminSectionEls.find((item) => item.id === sectionId);
+  if (!section) return;
+
+  const isCurrentlyVisible = !section.classList.contains("hidden");
+  adminSectionEls.forEach((item) => item.classList.add("hidden"));
+
+  if (!isCurrentlyVisible) {
+    section.classList.remove("hidden");
+  }
+
+  adminMenuEl.classList.add("hidden");
+  adminMenuButton.setAttribute("aria-expanded", "false");
 }
 
 function showToast(message) {
