@@ -9,6 +9,7 @@ const HIDDEN_MEMBER_NAMES_STORAGE_KEY = "escala-hidden-member-names";
 const THEME_PALETTE_STORAGE_KEY = "escala-theme-palette";
 const MAX_BASE64_IMAGE_SIZE_BYTES = 700 * 1024;
 const REQUIRED_SATURDAY_MEMBERS = 3;
+const VERSE_INDEX_STORAGE_KEY = "escala-verse-index";
 
 const THEME_PALETTES = {
   areia: {
@@ -186,6 +187,7 @@ const showVerseBtnEl = document.getElementById("showVerseBtn");
 const verseCardEl = document.getElementById("verseCard");
 const verseTextEl = document.getElementById("verseText");
 const verseRefEl = document.getElementById("verseRef");
+const closeVerseBtnEl = document.getElementById("closeVerseCard");
 let verseDataCache = null;
 
 async function fetchVersiculosCompletos() {
@@ -217,12 +219,35 @@ function flattenVerses(json) {
     .filter((item) => item && item.referencia && item.texto);
 }
 
-function getDailyVerse(verses) {
+function getDailyVerse(verses, index = 0) {
   if (!verses.length) return null;
   const now = new Date();
   const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
-  const index = seed % verses.length;
-  return verses[index];
+  const baseIndex = seed % verses.length;
+  const verseIndex = (baseIndex + index) % verses.length;
+  return verses[verseIndex];
+}
+
+function getCurrentVerseIndex() {
+  const today = new Date().toDateString();
+  const stored = localStorage.getItem(VERSE_INDEX_STORAGE_KEY);
+  if (stored) {
+    const { date, index } = JSON.parse(stored);
+    if (date === today) {
+      return index;
+    }
+  }
+  return 0;
+}
+
+function setCurrentVerseIndex(index) {
+  const today = new Date().toDateString();
+  localStorage.setItem(VERSE_INDEX_STORAGE_KEY, JSON.stringify({ date: today, index }));
+}
+
+function getNextVerseIndex() {
+  const current = getCurrentVerseIndex();
+  return (current + 1) % 3; // Cycle through 0, 1, 2
 }
 
 function getRandomVerse(verses) {
@@ -245,16 +270,17 @@ function renderVerse(verse, title) {
 }
 
 async function showVerseOfDay() {
-  if (verseCardEl.classList.contains("hidden")) {
-    const verses = await fetchVersiculosCompletos();
-    const verse = getDailyVerse(verses);
-    renderVerse(verse, "Versículo do dia");
-  } else {
-    verseCardEl.classList.add("hidden");
-  }
+  const verses = await fetchVersiculosCompletos();
+  const currentIndex = getCurrentVerseIndex();
+  const verse = getDailyVerse(verses, currentIndex);
+  renderVerse(verse, `Versículo ${currentIndex + 1} do dia`);
+  verseCardEl.classList.remove("hidden");
+  const nextIndex = getNextVerseIndex();
+  setCurrentVerseIndex(nextIndex);
 }
 
 showVerseBtnEl.addEventListener("click", showVerseOfDay);
+closeVerseBtnEl.addEventListener("click", () => verseCardEl.classList.add("hidden"));
 
 document.getElementById("prev").addEventListener("click", () => mudarMes(-1));
 document.getElementById("next").addEventListener("click", () => mudarMes(1));
