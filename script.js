@@ -181,6 +181,80 @@ const adminAuthMessageEl = document.getElementById("adminAuthMessage");
 const adminLogoutBtn = document.getElementById("adminLogoutBtn");
 const themeFormEl = document.getElementById("themeForm");
 const themePaletteSelectEl = document.getElementById("themePaletteSelect");
+const verseWidgetEl = document.getElementById("verseWidget");
+const showVerseBtnEl = document.getElementById("showVerseBtn");
+const verseCardEl = document.getElementById("verseCard");
+const verseTextEl = document.getElementById("verseText");
+const verseRefEl = document.getElementById("verseRef");
+let verseDataCache = null;
+
+async function fetchVersiculosCompletos() {
+  if (verseDataCache) return verseDataCache;
+
+  try {
+    const response = await fetch("versiculos_completos_200.json", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error("Não foi possível carregar os versículos.");
+    }
+
+    const json = await response.json();
+    const verses = flattenVerses(json);
+    verseDataCache = verses;
+    return verses;
+  } catch (error) {
+    console.error(error);
+    verseTextEl.textContent = "Erro ao carregar versículos. Verifique o arquivo JSON.";
+    verseRefEl.textContent = "";
+    verseCardEl.classList.remove("hidden");
+    return [];
+  }
+}
+
+function flattenVerses(json) {
+  return Object.values(json)
+    .filter(Array.isArray)
+    .flat()
+    .filter((item) => item && item.referencia && item.texto);
+}
+
+function getDailyVerse(verses) {
+  if (!verses.length) return null;
+  const now = new Date();
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  const index = seed % verses.length;
+  return verses[index];
+}
+
+function getRandomVerse(verses) {
+  if (!verses.length) return null;
+  const index = Math.floor(Math.random() * verses.length);
+  return verses[index];
+}
+
+function renderVerse(verse, title) {
+  if (!verse) {
+    verseTextEl.textContent = "Nenhum versículo encontrado.";
+    verseRefEl.textContent = "";
+    return;
+  }
+
+  verseTextEl.textContent = verse.texto;
+  verseRefEl.textContent = verse.referencia;
+  verseCardEl.querySelector(".verse-label").textContent = title;
+  verseCardEl.classList.remove("hidden");
+}
+
+async function showVerseOfDay() {
+  if (verseCardEl.classList.contains("hidden")) {
+    const verses = await fetchVersiculosCompletos();
+    const verse = getDailyVerse(verses);
+    renderVerse(verse, "Versículo do dia");
+  } else {
+    verseCardEl.classList.add("hidden");
+  }
+}
+
+showVerseBtnEl.addEventListener("click", showVerseOfDay);
 
 document.getElementById("prev").addEventListener("click", () => mudarMes(-1));
 document.getElementById("next").addEventListener("click", () => mudarMes(1));
