@@ -1,4 +1,7 @@
 ﻿const DATA_BASE = new Date(2025, 0, 1);
+const DIA_DOMINGO = 0;
+const DIAS_ESCALA_SEQUENCIAL = [1, 3, 5];
+const RESPONSAVEL_FIXO_DOMINGO = "D Carlinhos";
 const ALERTA_HORA = 17;
 const ALERTA_MINUTO = 0;
 const ALERTA_INTERVALO_MS = 30000;
@@ -57,13 +60,10 @@ const THEME_PALETTES = {
 };
 
 const baseGrupo = [
-  { nome: "Coop Paulo", cargo: "Cooperador", endereco: "Av: Fortunato Camargo 1075", contato: "(11) 91356-3576", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Cpaulo.PNG", modoEscala: "sequencia", diaFixo: "" },
   { nome: "D Reginaldo", cargo: "Diacono", endereco: "Rua F", contato: "(11) 96305-0243", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/reginaldo2.PNG", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Carlinhos", cargo: "Diacono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "sequencia", diaFixo: "" },
+  { nome: "D Carlinhos", cargo: "Diacono", endereco: "Rua H", contato: "(11) 95362-4938", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/carlinhos.PNG", modoEscala: "fixo", diaFixo: 0 },
   { nome: "D João", cargo: "Diacono", endereco: "Rua D", contato: "(11) 98553-8590", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Djoao.jpg", modoEscala: "sequencia", diaFixo: "" },
   { nome: "Coop Eliazer", cargo: "Cooperador", endereco: "Rua E", contato: "(11) 98255-3053", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/eliazer.jpg", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "D Paulo", cargo: "Diacono", endereco: "Rua B", contato: "(11) 94685-8301", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/Dpaulo.jpg", modoEscala: "sequencia", diaFixo: "" },
-  { nome: "Coop Manuel", cargo: "Cooperador", endereco: "Rua G", contato: "(11) 98980-6608", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/manuel.PNG", modoEscala: "sequencia", diaFixo: "" },
   { nome: "D zezinho", cargo: "Diacono", endereco: "Rua Curitiba", contato: "(11) 95083-4846", atividade: "ABRIR E FECHAR A IGREJA", foto: "img/zezinho.PNG", modoEscala: "sequencia", diaFixo: "" }
 ];
 
@@ -364,7 +364,9 @@ function getGrupoComOrigem() {
 }
 
 function getIntegrantesSequenciais() {
-  return getGrupoCompleto().filter((pessoa) => pessoa.modoEscala !== "fixo");
+  return getGrupoCompleto().filter((pessoa) =>
+    pessoa.modoEscala !== "fixo" && pessoa.nome !== RESPONSAVEL_FIXO_DOMINGO
+  );
 }
 
 function getIntegrantesFixosPorDia(dayOfWeek) {
@@ -438,7 +440,7 @@ function contarDiasEscala(data) {
   const cursor = new Date(DATA_BASE);
 
   while (cursor < data) {
-    if ([0, 1, 3, 5].includes(cursor.getDay())) {
+    if (DIAS_ESCALA_SEQUENCIAL.includes(cursor.getDay())) {
       count += 1;
     }
     cursor.setDate(cursor.getDate() + 1);
@@ -465,6 +467,10 @@ function findPessoaByNome(nome) {
   return getGrupoCompleto().find((pessoa) => pessoa.nome === nome) || null;
 }
 
+function getResponsavelFixoDomingo() {
+  return baseGrupo.find((pessoa) => pessoa.nome === RESPONSAVEL_FIXO_DOMINGO) || null;
+}
+
 function pessoaParaData(data) {
   const dayOfWeek = data.getDay();
 
@@ -481,7 +487,11 @@ function pessoaParaData(data) {
     return { pessoa: getSaturdayConfig(weekOfMonth), classe: "sabado", tipo: "sabado" };
   }
 
-  if ([0, 1, 3, 5].includes(dayOfWeek)) {
+  if (dayOfWeek === DIA_DOMINGO) {
+    return { pessoa: getResponsavelFixoDomingo(), classe: "grupoA", tipo: "escala" };
+  }
+
+  if (DIAS_ESCALA_SEQUENCIAL.includes(dayOfWeek)) {
     const fixosDoDia = getIntegrantesFixosPorDia(dayOfWeek);
     if (fixosDoDia.length) {
       const ocorrencias = contarOcorrenciasDoDiaSemana(data, dayOfWeek);
@@ -1862,6 +1872,3 @@ function bootstrap() {
 }
 
 bootstrap();
-
-
-
